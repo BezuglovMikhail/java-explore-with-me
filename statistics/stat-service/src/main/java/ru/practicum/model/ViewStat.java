@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,5 +15,5 @@ public class ViewStat {
 
     private String uri;
 
-    private Integer count;
+    private Long hits;
 }

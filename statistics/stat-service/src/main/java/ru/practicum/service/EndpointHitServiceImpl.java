@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.practicum.dto.EndpointHitMapper.toEndpointHit;
 import static ru.practicum.dto.EndpointHitMapper.toEndpointHitDto;
@@ -33,25 +34,25 @@ public class EndpointHitServiceImpl implements EndpointHitService {
 
     @Override
     public List<ViewStatDto> findAllViewStats(List<String> uris, String start, String end, Boolean unique) {
-      /* List<ViewStat> viewStatList = new ArrayList<>();
+        List<ViewStat> viewStatList = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime startFormatter = LocalDateTime.parse(start, formatter);
         LocalDateTime endFormatter = LocalDateTime.parse(end, formatter);
 
         if (uris == null) {
-            //viewStatList = repository.findAllCountIpAsHitsAppUriCountIpByTimestampBetween(startFormatter, endFormatter);
-        }
-
-        else if (unique) {
+            viewStatList = repository.findAll(startFormatter, endFormatter);
+        } else if (unique) {
             for (String uri : uris) {
-                viewStatList.add(repository.findDistinctViewStat(uri, startFormatter, endFormatter));
+                viewStatList.add(repository.getDistinctViewStat(uri, startFormatter, endFormatter));
             }
         } else {
             for (String uri : uris) {
-                viewStatList.add(repository.findViewStat(uri, startFormatter, endFormatter));
+                viewStatList.add(repository.getViewStat(uri, startFormatter, endFormatter));
             }
         }
-        return mapToViewStatDto(viewStatList);*/
-        return null;
+        return mapToViewStatDto(viewStatList)
+                .stream()
+                .sorted((o1, o2) -> (int) (o2.getHits() - o1.getHits()))
+                .collect(Collectors.toList());
     }
 }

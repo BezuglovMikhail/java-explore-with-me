@@ -7,7 +7,6 @@ import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatDto;
 import ru.practicum.service.EndpointHitService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,11 +23,14 @@ public class StatsController {
     @GetMapping(path = "/{stats}")
     public List<ViewStatDto> getStatisticsVisits(@RequestParam(required = false) List<String> uris, @RequestParam String start,
                                                  @RequestParam String end, @RequestParam(required = false, defaultValue = "false") Boolean unique) {
-        List<ViewStatDto> usersDto = service.findAllViewStats(uris, start, end, unique);
+
+
+        List<ViewStatDto> viewStatDtoList = service.findAllViewStats(uris, start, end, unique);
         log.info("Statistics collected");
 
-        return usersDto;
+        return viewStatDtoList;
     }
+
     @PostMapping(path = "/{hit}")
     public EndpointHitDto saveUser(@RequestBody EndpointHitDto endpointHitDto) {
         EndpointHitDto addEndpointHit = service.save(endpointHitDto);

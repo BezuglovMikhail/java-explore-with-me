@@ -11,7 +11,7 @@ public class ViewStatMapper {
         return new ViewStatDto(
                 viewStat.getApp(),
                 viewStat.getUri(),
-                viewStat.getCount()
+                viewStat.getHits()
         );
     }
 
