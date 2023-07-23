@@ -33,7 +33,7 @@ public class Client extends BaseClient {
             path += "&unique=" + unique;
         }
         log.info("GET response from Stat-Server path = {}", path);
-        return get(path, null);
+        return get(path);
     }
 
     public ResponseEntity<Object> createStatistics(EndpointHitDto requestDto) {
