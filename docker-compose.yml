@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   stats-server:
-    build: stats-server/statistics
+    build: ./stats-server/statistics
     image: stats-server
     container_name: stats-server
     ports:
@@ -30,12 +30,13 @@ services:
       - POSTGRES_PASSWORD=root
 
   ewm-service:
-    build: ewm-service
+    build: ./ewm-service
     container_name: ewm-service
     ports:
       - "8080:8080"
     depends_on:
       - ewm-db
+      - stats-server
     environment:
       #- SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewm-db
       - APP_DB_HOST=stats-db
@@ -44,8 +45,7 @@ services:
       - APP_DB_USER=postgres
       - APP_DB_PASSWORD=root
       - SPRING_PROFILES_ACTIVE=default
-
-      #- Stats_Server_URL=http://stats-server:9090
+      - APP_Stats_Server_URL=http://stats-server:9090
       #- SERVER_PORT=8080
 
   ewm-db:
