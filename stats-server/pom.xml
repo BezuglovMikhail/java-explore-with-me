@@ -9,15 +9,13 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <name>Statistics</name>
-
     <artifactId>stats-server</artifactId>
     <packaging>pom</packaging>
 
     <modules>
         <module>stat-client</module>
         <module>stat-dto</module>
-        <module>statistics</module>
+        <module>stat-server</module>
     </modules>
 
     <properties>
