@@ -14,7 +14,7 @@ public class BaseClient {
     }
 
     protected ResponseEntity<Object> get(String path) {
-        return makeAndSendRequest(HttpMethod.GET, path, null);
+        return null;
     }
 
     protected <T> ResponseEntity<Object> post(String path, T body) {
@@ -31,10 +31,10 @@ public class BaseClient {
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
         }
-        return prepareGatewayResponse(statisticServerResponse);
+        return prepareResponse(statisticServerResponse);
     }
 
-    private ResponseEntity<Object> prepareGatewayResponse(ResponseEntity<Object> response) {
+    private ResponseEntity<Object> prepareResponse(ResponseEntity<Object> response) {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;
         }
