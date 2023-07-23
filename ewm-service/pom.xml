@@ -9,6 +9,8 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <name>EwmService</name>
+
     <artifactId>ewm-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 

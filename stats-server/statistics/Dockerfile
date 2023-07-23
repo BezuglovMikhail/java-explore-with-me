@@ -1,3 +1,3 @@
 FROM amazoncorretto:11-alpine-jdk
-COPY target/*.jar statistics.jar
-ENTRYPOINT ["java","-jar","/statistics.jar"]
+COPY target/*.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]

@@ -1,4 +1,4 @@
-package ru.practicum.controller;
+package ru.practicum;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.controller.StatsController;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatDto;
 import ru.practicum.service.EndpointHitService;
