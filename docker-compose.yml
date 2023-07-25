@@ -10,13 +10,14 @@ services:
      # - "9091:9091"
     depends_on:
       - stats-db
-      - ewm-service
+     # - ewm-service
     environment:
       - DB_HOST=stats-db
       - DB_PORT=5432
       - DB_NAME=stats-server
       - DB_USER=postgres
       - DB_PASSWORD=root
+      #- ewm-service_SERVER_URL=http://server:8080
       #- SPRING_PROFILES_ACTIVE=default
 
   stats-db:
