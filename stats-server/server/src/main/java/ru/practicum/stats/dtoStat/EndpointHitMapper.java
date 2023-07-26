@@ -5,6 +5,9 @@ import ru.practicum.stats.model.EndpointHit;
 
 public class EndpointHitMapper {
 
+    private EndpointHitMapper() {
+    }
+
     public static EndpointHitDto toEndpointHitDto(EndpointHit endpointHit) {
         if (endpointHit != null) {
             return new EndpointHitDto(

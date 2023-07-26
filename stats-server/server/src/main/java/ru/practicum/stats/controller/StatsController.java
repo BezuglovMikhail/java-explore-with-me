@@ -31,7 +31,6 @@ public class StatsController {
 
         List<ViewStatDto> viewStatDtoList = service.findAllViewStats(uris, start, end, unique);
         log.info("Statistics collected");
-
         return viewStatDtoList;
     }
 

@@ -32,12 +32,12 @@ public class Client extends BaseClient {
         if (unique != null) {
             path += "&unique=" + unique;
         }
-       // log.info("GET response from Stat-Server path = {}", path);
+        log.info("GET response from Stat-Server path = {}", path);
         return get(path);
     }
 
     public ResponseEntity<Object> createStatistics(EndpointHitDto requestDto) {
-       // log.info("POST response from Stat-Server for create hit = {}", requestDto);
+        log.info("POST response from Stat-Server for create hit = {}", requestDto);
         return post(API_PREFIX_POST, requestDto);
     }
 }
