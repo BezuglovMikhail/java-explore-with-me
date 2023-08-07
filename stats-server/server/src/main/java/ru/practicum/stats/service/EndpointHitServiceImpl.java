@@ -2,8 +2,9 @@ package ru.practicum.stats.service;
 
 import org.springframework.stereotype.Service;
 import ru.practicum.stats.dto.EndpointHitDto;
-
-import ru.practicum.stats.dtoStat.ViewStatDto;
+import ru.practicum.stats.dtoStat.EndpointHitMapper;
+import ru.practicum.stats.dto.ViewStatDto;
+import ru.practicum.stats.dtoStat.ViewStatMapper;
 import ru.practicum.stats.model.ViewStat;
 import ru.practicum.stats.repository.EndpointHitRepository;
 
@@ -12,10 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ru.practicum.stats.dtoStat.EndpointHitMapper.toEndpointHit;
-import static ru.practicum.stats.dtoStat.EndpointHitMapper.toEndpointHitDto;
-import static ru.practicum.stats.dtoStat.ViewStatMapper.mapToViewStatDto;
 
 @Service
 public class EndpointHitServiceImpl implements EndpointHitService {
@@ -28,7 +25,7 @@ public class EndpointHitServiceImpl implements EndpointHitService {
 
     @Override
     public EndpointHitDto save(EndpointHitDto endpointHitDto) {
-        return toEndpointHitDto(repository.save(toEndpointHit(endpointHitDto)));
+        return EndpointHitMapper.toEndpointHitDto(repository.save(EndpointHitMapper.toEndpointHit(endpointHitDto)));
     }
 
     @Override
@@ -49,7 +46,7 @@ public class EndpointHitServiceImpl implements EndpointHitService {
                 viewStatList.add(repository.getViewStat(uri, startFormatter, endFormatter));
             }
         }
-        return mapToViewStatDto(viewStatList)
+        return ViewStatMapper.mapToViewStatDto(viewStatList)
                 .stream()
                 .sorted((o1, o2) -> (int) (o2.getHits() - o1.getHits()))
                 .collect(Collectors.toList());

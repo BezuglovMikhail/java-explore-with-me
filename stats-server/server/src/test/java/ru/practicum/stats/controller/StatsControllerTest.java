@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.stats.dto.EndpointHitDto;
-import ru.practicum.stats.dtoStat.ViewStatDto;
+import ru.practicum.stats.dto.ViewStatDto;
 import ru.practicum.stats.service.EndpointHitService;
 
 import java.nio.charset.StandardCharsets;

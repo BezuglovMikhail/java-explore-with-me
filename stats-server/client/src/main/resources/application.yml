@@ -1,0 +1,4 @@
+app:
+  name: unknown
+  stats-server-url: http://localhost:9090
+

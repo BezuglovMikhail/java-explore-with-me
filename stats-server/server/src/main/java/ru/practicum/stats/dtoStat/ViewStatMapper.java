@@ -1,5 +1,6 @@
 package ru.practicum.stats.dtoStat;
 
+import ru.practicum.stats.dto.ViewStatDto;
 import ru.practicum.stats.model.ViewStat;
 
 import java.util.ArrayList;
