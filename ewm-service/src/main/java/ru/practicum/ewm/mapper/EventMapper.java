@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.practicum.ewm.mapper.UserMapper.toUserShortDto;
-
 public class EventMapper {
 
     private EventMapper() {
@@ -38,7 +36,7 @@ public class EventMapper {
         newEvent.setRequestModeration(newEventDto.getRequestModeration());
         newEvent.setState(State.PENDING);
         newEvent.setTitle(newEventDto.getTitle());
-        newEvent.setViews(0);
+        newEvent.setViews(0L);
         return newEvent;
     }
 
@@ -161,7 +159,6 @@ public class EventMapper {
         for (Event event : events) {
             result.add(toEventShortDto(event));
         }
-
         return result;
     }
 
@@ -171,8 +168,6 @@ public class EventMapper {
         for (Event event : events) {
             result.add(toEventFullDto(event));
         }
-
         return result;
     }
-
 }

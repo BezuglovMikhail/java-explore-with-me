@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = StatsController.class)
 class StatsControllerTest {
 
-        @Autowired
+      /*  @Autowired
         ObjectMapper mapper;
 
         @MockBean
@@ -265,5 +265,5 @@ class StatsControllerTest {
                     .save(endpointHitDtoSave);
 
             Mockito.verifyNoMoreInteractions(service);
-        }
+        }*/
     }

@@ -1,21 +1,21 @@
 package ru.practicum.ewm.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.CustomPageRequest;
+import ru.practicum.ewm.dto.CategoryDto;
+import ru.practicum.ewm.dto.NewCategoryDto;
+import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.exeption.NotFoundException;
 import ru.practicum.ewm.exeption.ValidationException;
 import ru.practicum.ewm.mapper.CategoryMapper;
 import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.repository.CategoryRepository;
-import ru.practicum.ewm.CustomPageRequest;
-import ru.practicum.ewm.dto.CategoryDto;
-import ru.practicum.ewm.dto.NewCategoryDto;
-import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.service.CategoryService;
 
 import javax.validation.ConstraintViolationException;
@@ -25,14 +25,10 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
     private CategoryRepository repository;
-
-    public CategoryServiceImpl(CategoryRepository repository) {
-        this.repository = repository;
-    }
 
     @Transactional
     @Override

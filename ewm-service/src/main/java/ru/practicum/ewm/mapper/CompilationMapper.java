@@ -46,7 +46,6 @@ public class CompilationMapper {
                 : old.getTitle());
         updateCompilation.setEvents(events != null
                 ? events : old.getEvents());
-
         return updateCompilation;
     }
 
@@ -56,7 +55,6 @@ public class CompilationMapper {
         for (Compilation compilation : compilations) {
             result.add(toCompilationDto(compilation));
         }
-
         return result;
     }
 }

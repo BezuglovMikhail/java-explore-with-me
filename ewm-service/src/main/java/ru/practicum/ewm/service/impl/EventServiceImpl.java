@@ -1,18 +1,13 @@
 package ru.practicum.ewm.service.impl;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.BooleanBuilder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -48,36 +43,20 @@ import static ru.practicum.ewm.mapper.EventMapper.*;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
-    @Autowired
     private EventRepository eventRepository;
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private CategoryRepository categoryRepository;
 
-    @Autowired
     private LocationRepository locationRepository;
 
-    @Autowired
     private final StatClient statsClient;
 
-    @Autowired
-    private final ObjectMapper objectMapper;
-
     private final String format = ("yyyy-MM-dd HH:mm:ss");
-
-    public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, StatClient statsClient, ObjectMapper objectMapper) {
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
-        this.categoryRepository = categoryRepository;
-        this.locationRepository = locationRepository;
-        this.statsClient = statsClient;
-        this.objectMapper = objectMapper;
-    }
 
     @Transactional
     @Override
@@ -210,47 +189,49 @@ public class EventServiceImpl implements EventService {
         Sort sort = Sort.by("id").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sort);
 
+        LocalDateTime start = toLocalDateTime(rangeStart);
+        LocalDateTime end = toLocalDateTime(rangeEnd);
+        checkStartEndSearch(start, end);
         SearchFilter filter = new SearchFilter(
                 users,
                 states,
                 categories,
-                toLocalDateTime(rangeStart),
-                toLocalDateTime(rangeEnd),
+                start,
+                end,
                 null,
                 null,
                 null
         );
 
-        checkStartEndSearch(filter.getRangeStart(), filter.getRangeEnd());
-
         BooleanBuilder booleanBuilder = makeBooleanBuilder(filter);
-
         Page<Event> page = eventRepository.findAll(booleanBuilder, pageable);
         return mapToEventFullDto(page);
     }
 
     @Override
     public List<EventShortDto> publicFindEventsWhitFilter(String text, Boolean paid, Boolean onlyAvailable,
-                                                         EventSort sort, List<Long> users,
-                                                         List<Long> categories, String rangeStart,
-                                                         String rangeEnd, Integer from, Integer size) {
+                                                          EventSort sort, List<Long> users,
+                                                          List<Long> categories, String rangeStart,
+                                                          String rangeEnd, Integer from, Integer size) {
         Sort sortPage = sort == EventSort.EVENT_DATE
                 ? Sort.by("eventDate").ascending()
                 : Sort.by("views").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sortPage);
 
+        LocalDateTime start = toLocalDateTime(rangeStart);
+        LocalDateTime end = toLocalDateTime(rangeEnd);
+        checkStartEndSearch(start, end);
+
         SearchFilter filter = new SearchFilter(
                 users,
                 List.of(State.PUBLISHED),
                 categories,
-                toLocalDateTime(rangeStart),
-                toLocalDateTime(rangeEnd),
+                start,
+                end,
                 text,
                 paid,
                 onlyAvailable
         );
-
-        checkStartEndSearch(filter.getRangeStart(), filter.getRangeEnd());
 
         BooleanBuilder booleanBuilder = makeBooleanBuilder(filter);
         Page<Event> page = eventRepository.findAll(booleanBuilder, pageable);
@@ -318,10 +299,12 @@ public class EventServiceImpl implements EventService {
     }
 
     private void setViews(List<Event> events) {
-        setViews(events, LocalDateTime.of(0, 1, 1, 0, 0, 0), LocalDateTime.now());
+        setViews(events, LocalDateTime.of(0, 1, 1, 0, 0, 0),
+                LocalDateTime.now());
     }
 
     private void setViews(List<Event> events, LocalDateTime start, LocalDateTime end) {
+
         if (Objects.isNull(events) || events.isEmpty()) {
             return;
         }
@@ -329,23 +312,19 @@ public class EventServiceImpl implements EventService {
                 .map(event -> "/events/" + event.getId())
                 .collect(Collectors.toList());
 
-        List<ViewStatDto> dtos = null;
+        List<ViewStatDto> dtoList = new ArrayList<>();
         try {
-            ResponseEntity<Object> responseEntity = statsClient.getStatistics(start, end, uris, true);
-            Object body = responseEntity.getBody();
-            if (body != null) {
-                TypeReference<List<ViewStatDto>> typeRef = new TypeReference<>() {
-                };
-                dtos = objectMapper.readValue(body.toString(), typeRef);
+            List<ViewStatDto> responseEntity = statsClient.getStatistics(start, end, uris, true);
+            if (responseEntity != null) {
+                dtoList = responseEntity;
             }
-        } catch (RestClientException | JsonProcessingException e) {
+        } catch (RestClientException e) {
             log.error(e.getMessage());
             e.printStackTrace();
             return;
         }
-
-        List<ViewStatDto> finalDtos = dtos;
-        events.forEach(event -> setViewsFromSources(event, finalDtos != null ? finalDtos : List.of()));
+        List<ViewStatDto> finalDtoList = dtoList;
+        events.forEach(event -> setViewsFromSources(event, finalDtoList != null ? finalDtoList : List.of()));
     }
 
     private void setViewsFromSources(Event event, List<ViewStatDto> sources) {

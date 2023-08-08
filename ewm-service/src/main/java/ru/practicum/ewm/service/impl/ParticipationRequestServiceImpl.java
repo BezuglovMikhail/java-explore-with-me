@@ -1,21 +1,21 @@
 package ru.practicum.ewm.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.dto.ParticipationRequestDto;
+import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.exeption.NotFoundException;
 import ru.practicum.ewm.exeption.ValidationException;
 import ru.practicum.ewm.mapper.ParticipationRequestMapper;
 import ru.practicum.ewm.model.Event;
+import ru.practicum.ewm.model.ParticipationRequest;
 import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.repository.EventRepository;
-import ru.practicum.ewm.repository.UserRepository;
-import ru.practicum.ewm.dto.ParticipationRequestDto;
-import ru.practicum.ewm.exeption.IncorrectParameterException;
-import ru.practicum.ewm.model.ParticipationRequest;
 import ru.practicum.ewm.repository.ParticipationRequestRepository;
+import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.request.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.service.ParticipationRequestService;
@@ -28,20 +28,14 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
-    @Autowired
     private final ParticipationRequestRepository partRequestRepository;
-    @Autowired
-    private final EventRepository eventRepository;
-    @Autowired
-    private final UserRepository userRepository;
 
-    public ParticipationRequestServiceImpl(ParticipationRequestRepository partRequestRepository, EventRepository eventRepository, UserRepository userRepository) {
-        this.partRequestRepository = partRequestRepository;
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
-    }
+    private final EventRepository eventRepository;
+
+    private final UserRepository userRepository;
 
     @Transactional
     @Override
@@ -123,8 +117,6 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         Event checkEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event whit id = " + eventId + " not found in database."));
 
-        // checkAdminActionState(updateRequest.getStatus(), checkEvent.getState());
-
         if (checkEvent.getParticipantLimit() <= 0
                 || checkEvent.getConfirmedRequests() >= checkEvent.getParticipantLimit()
                 || !checkEvent.getRequestModeration()) {
@@ -136,7 +128,6 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         }
         List<ParticipationRequestDto> confirmed = new ArrayList<>();
         List<ParticipationRequestDto> rejected = new ArrayList<>();
-
         List<ParticipationRequest> requestList = partRequestRepository.findByIdIn(updateRequest.getRequestIds());
 
         for (ParticipationRequest request : requestList) {

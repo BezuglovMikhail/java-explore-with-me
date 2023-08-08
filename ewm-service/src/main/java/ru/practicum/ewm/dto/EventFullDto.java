@@ -10,7 +10,6 @@ import ru.practicum.ewm.status.State;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
@@ -52,5 +51,5 @@ public class EventFullDto {
 
     private String title;
 
-    private Integer views;
+    private Long views;
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 public class EventRequestStatusUpdateRequest {
+
     private List<Long> requestIds;
 
     @Enumerated(EnumType.STRING)

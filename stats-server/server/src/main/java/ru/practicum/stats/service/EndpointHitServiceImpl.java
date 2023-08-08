@@ -1,10 +1,12 @@
 package ru.practicum.stats.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats.dto.EndpointHitDto;
-import ru.practicum.stats.dtoStat.EndpointHitMapper;
 import ru.practicum.stats.dto.ViewStatDto;
-import ru.practicum.stats.dtoStat.ViewStatMapper;
+import ru.practicum.stats.dtoStat.EndpointHitMapper;
+import ru.practicum.stats.exeption.ValidationException;
 import ru.practicum.stats.model.ViewStat;
 import ru.practicum.stats.repository.EndpointHitRepository;
 
@@ -12,16 +14,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static ru.practicum.stats.dtoStat.ViewStatMapper.mapToViewStatDto;
+
+@RequiredArgsConstructor
 @Service
 public class EndpointHitServiceImpl implements EndpointHitService {
 
     private final EndpointHitRepository repository;
-
-    public EndpointHitServiceImpl(EndpointHitRepository endpointHitRepository) {
-        this.repository = endpointHitRepository;
-    }
 
     @Override
     public EndpointHitDto save(EndpointHitDto endpointHitDto) {
@@ -35,6 +37,8 @@ public class EndpointHitServiceImpl implements EndpointHitService {
         LocalDateTime startFormatter = LocalDateTime.parse(start, formatter);
         LocalDateTime endFormatter = LocalDateTime.parse(end, formatter);
 
+        checkStartEndSearch(startFormatter, endFormatter);
+
         if (uris == null) {
             viewStatList = repository.findAll(startFormatter, endFormatter);
         } else if (unique) {
@@ -46,9 +50,22 @@ public class EndpointHitServiceImpl implements EndpointHitService {
                 viewStatList.add(repository.getViewStat(uri, startFormatter, endFormatter));
             }
         }
-        return ViewStatMapper.mapToViewStatDto(viewStatList)
+        return mapToViewStatDto(viewStatList)
                 .stream()
                 .sorted((o1, o2) -> (int) (o2.getHits() - o1.getHits()))
                 .collect(Collectors.toList());
+    }
+
+    private void checkStartEndSearch(LocalDateTime start, LocalDateTime end) {
+        if (Objects.isNull(start) || Objects.isNull(end)) {
+            return;
+        }
+        if (end.isBefore(start)) {
+            throw new ValidationException(getClass().getName(), "Integrity constraint has been violated.",
+                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
+                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
+                            " could not execute statement",
+                    HttpStatus.BAD_REQUEST, LocalDateTime.now());
+        }
     }
 }

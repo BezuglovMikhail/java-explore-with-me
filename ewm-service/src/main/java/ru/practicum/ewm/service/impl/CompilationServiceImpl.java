@@ -1,20 +1,20 @@
 package ru.practicum.ewm.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.exeption.NotFoundException;
-import ru.practicum.ewm.mapper.CompilationMapper;
-import ru.practicum.ewm.model.Event;
-import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.CustomPageRequest;
 import ru.practicum.ewm.dto.CompilationDto;
 import ru.practicum.ewm.dto.NewCompilationDto;
+import ru.practicum.ewm.exeption.NotFoundException;
+import ru.practicum.ewm.mapper.CompilationMapper;
 import ru.practicum.ewm.model.Compilation;
+import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.repository.CompilationRepository;
+import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.request.UpdateCompilationRequest;
 import ru.practicum.ewm.service.CompilationService;
 
@@ -23,18 +23,12 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
 
-    @Autowired
     private CompilationRepository compilationRepository;
 
-    @Autowired
     private EventRepository eventRepository;
-
-    public CompilationServiceImpl(CompilationRepository compilationRepository, EventRepository eventRepository) {
-        this.compilationRepository = compilationRepository;
-        this.eventRepository = eventRepository;
-    }
 
     @Transactional
     @Override

@@ -14,7 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-
 @Data
 @Entity
 @AllArgsConstructor
@@ -27,10 +26,13 @@ public class EndpointHit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "app", nullable = false)
     private String app;
 
+    @Column(name = "uri", nullable = false)
     private String uri;
 
+    @Column(name = "ip", nullable = false)
     private String ip;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

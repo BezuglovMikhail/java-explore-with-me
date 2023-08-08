@@ -16,4 +16,13 @@ public class ViewStat {
     private String uri;
 
     private Long hits;
+
+    @Override
+    public String toString() {
+        return "ViewStat{" +
+                "app='" + app + '\'' +
+                ", uri='" + uri + '\'' +
+                ", hits=" + hits +
+                '}';
+    }
 }

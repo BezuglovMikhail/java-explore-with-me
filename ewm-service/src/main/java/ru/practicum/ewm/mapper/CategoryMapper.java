@@ -31,7 +31,6 @@ public class CategoryMapper {
         return newCategory;
     }
 
-
     public static Category toCategoryUpdate(CategoryDto categoryDto, Long catId) {
         Category categoryUpdate = new Category();
         categoryUpdate.setId(catId);
@@ -45,7 +44,6 @@ public class CategoryMapper {
         for (Category category : categories) {
             result.add(toCategoryDto(category));
         }
-
         return result;
     }
 }
