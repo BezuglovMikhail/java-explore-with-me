@@ -1,7 +1,7 @@
 package ru.practicum.ewm.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -25,10 +25,14 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
+    @Autowired
     private CategoryRepository repository;
+
+    public CategoryServiceImpl(CategoryRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional
     @Override

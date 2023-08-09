@@ -47,7 +47,7 @@ public class Event {
 
     private Boolean paid;
 
-    private int participantLimit;
+    private Integer participantLimit;
 
     private LocalDateTime publishedOn;
 

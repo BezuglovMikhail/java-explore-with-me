@@ -1,6 +1,5 @@
 package ru.practicum.ewm.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,16 +24,23 @@ import static ru.practicum.ewm.mapper.UserMapper.toUserShortDto;
 @RestController
 @RequestMapping(path = "/admin")
 @Slf4j
-@RequiredArgsConstructor
 public class AdminController {
 
+    @Autowired
     private UserService userService;
-
+    @Autowired
     private CategoryService categoryService;
-
+    @Autowired
     private CompilationService compilationService;
-
+    @Autowired
     private EventService eventService;
+
+    public AdminController(UserService userService, CategoryService categoryService, CompilationService compilationService, EventService eventService) {
+        this.userService = userService;
+        this.categoryService = categoryService;
+        this.compilationService = compilationService;
+        this.eventService = eventService;
+    }
 
     @GetMapping("/users")
     public List<UserDto> getUsers(@RequestParam(defaultValue = "0") Integer from,

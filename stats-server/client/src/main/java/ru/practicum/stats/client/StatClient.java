@@ -23,15 +23,13 @@ public class StatClient {
     private static final String API_PREFIX_POST = "/hit";
     private static final String API_PREFIX_GET = "/stats";
 
-    private static final String SERVER_URL = "http://localhost:9090";
-
     private static final String APP = "ewm-main";
     private final RestTemplate rest;
     private final String app;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public StatClient(@Value(SERVER_URL) String serverUrl,
+    public StatClient(@Value("${stats-client}") String serverUrl,
                       @Value(APP) String app,
                       RestTemplateBuilder builder) {
         this.app = app;

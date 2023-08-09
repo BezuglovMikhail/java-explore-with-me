@@ -1,7 +1,7 @@
 package ru.practicum.ewm.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,14 +28,20 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
+    @Autowired
     private final ParticipationRequestRepository partRequestRepository;
-
+    @Autowired
     private final EventRepository eventRepository;
-
+    @Autowired
     private final UserRepository userRepository;
+
+    public ParticipationRequestServiceImpl(ParticipationRequestRepository partRequestRepository, EventRepository eventRepository, UserRepository userRepository) {
+        this.partRequestRepository = partRequestRepository;
+        this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
+    }
 
     @Transactional
     @Override
@@ -79,13 +85,13 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
     @Override
     public List<ParticipationRequestDto> findAll(long userId) {
-        return ParticipationRequestMapper.mapToParticipationRequestDto(partRequestRepository.findAllByRequester_id(userId));
+        return ParticipationRequestMapper.mapToParticipationRequestDto(
+                partRequestRepository.findAllByRequester_id(userId));
     }
 
     @Transactional
     @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
-
         ParticipationRequest oldRequest = partRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("ParticipationRequest whit id = " + requestId +
                         " not found in database."));
@@ -104,10 +110,24 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         }
     }
 
+    private void checkRequestForCancel(Long userId, Long requesterId, State oldRequestState) {
+        if (userId.equals(requesterId)
+                && !oldRequestState.equals(State.PUBLISHED)) {
+            return;
+        } else {
+            throw new IncorrectParameterException(getClass().getName(), "User with id = " + userId +
+                    " don`t have request with id = ",
+                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
+                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
+                            " could not execute statement",
+                    HttpStatus.CONFLICT, LocalDateTime.now());
+        }
+    }
+
     @Override
     public List<ParticipationRequestDto> findAllRequestEventByUserId(Long userId, Long eventId) {
-
-        return ParticipationRequestMapper.mapToParticipationRequestDto(partRequestRepository.findAllByEvent_Id(eventId));
+        return ParticipationRequestMapper.mapToParticipationRequestDto(
+                partRequestRepository.findAllByEvent_Id(eventId));
     }
 
     @Transactional
@@ -149,26 +169,5 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             }
         }
         return new EventRequestStatusUpdateResult(confirmed, rejected);
-    }
-
-    private void checkAdminActionState(State updateState, State oldState) {
-        if (Objects.isNull(updateState)) {
-            return;
-        }
-        if (updateState.equals(State.PUBLISH_EVENT) && !oldState.equals(State.PENDING)) {
-            throw new IncorrectParameterException(getClass().getName(), "Integrity constraint has been violated.",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.CONFLICT, LocalDateTime.now());
-        }
-
-        if (updateState.equals(State.REJECT_EVENT) && !oldState.equals(State.PENDING)) {
-            throw new IncorrectParameterException(getClass().getName(), "Integrity constraint has been violated.",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.CONFLICT, LocalDateTime.now());
-        }
     }
 }

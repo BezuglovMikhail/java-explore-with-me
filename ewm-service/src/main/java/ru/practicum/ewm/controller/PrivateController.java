@@ -1,6 +1,5 @@
 package ru.practicum.ewm.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,12 +20,17 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/users/{userId}")
 @Slf4j
-@RequiredArgsConstructor
 public class PrivateController {
 
+    @Autowired
     private EventService eventService;
-
+    @Autowired
     private ParticipationRequestService partRequestService;
+
+    public PrivateController(EventService eventService, ParticipationRequestService partRequestService) {
+        this.eventService = eventService;
+        this.partRequestService = partRequestService;
+    }
 
     @PostMapping("/events")
     @ResponseStatus(value = HttpStatus.CREATED)

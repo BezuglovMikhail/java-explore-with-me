@@ -1,7 +1,7 @@
 package ru.practicum.ewm.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,12 +23,17 @@ import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
 
+    @Autowired
     private CompilationRepository compilationRepository;
-
+    @Autowired
     private EventRepository eventRepository;
+
+    public CompilationServiceImpl(CompilationRepository compilationRepository, EventRepository eventRepository) {
+        this.compilationRepository = compilationRepository;
+        this.eventRepository = eventRepository;
+    }
 
     @Transactional
     @Override

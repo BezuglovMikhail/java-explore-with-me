@@ -1,6 +1,6 @@
 package ru.practicum.stats.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats.dto.EndpointHitDto;
@@ -19,11 +19,15 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.stats.dtoStat.ViewStatMapper.mapToViewStatDto;
 
-@RequiredArgsConstructor
 @Service
 public class EndpointHitServiceImpl implements EndpointHitService {
 
+    @Autowired
     private final EndpointHitRepository repository;
+
+    public EndpointHitServiceImpl(EndpointHitRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public EndpointHitDto save(EndpointHitDto endpointHitDto) {

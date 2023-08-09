@@ -1,9 +1,9 @@
 package ru.practicum.ewm.service.impl;
 
 import com.querydsl.core.BooleanBuilder;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -19,6 +19,7 @@ import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.exeption.NotFoundException;
 import ru.practicum.ewm.exeption.ValidationException;
 import ru.practicum.ewm.model.*;
+import ru.practicum.ewm.model.QEvent;
 import ru.practicum.ewm.repository.CategoryRepository;
 import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.repository.LocationRepository;
@@ -43,20 +44,27 @@ import static ru.practicum.ewm.mapper.EventMapper.*;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
-
+    @Autowired
     private EventRepository eventRepository;
-
+    @Autowired
     private UserRepository userRepository;
-
+    @Autowired
     private CategoryRepository categoryRepository;
-
+    @Autowired
     private LocationRepository locationRepository;
-
+    @Autowired
     private final StatClient statsClient;
 
     private final String format = ("yyyy-MM-dd HH:mm:ss");
+
+    public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, StatClient statsClient) {
+        this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
+        this.locationRepository = locationRepository;
+        this.statsClient = statsClient;
+    }
 
     @Transactional
     @Override

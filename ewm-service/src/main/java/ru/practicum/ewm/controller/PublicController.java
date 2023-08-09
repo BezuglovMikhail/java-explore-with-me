@@ -1,6 +1,5 @@
 package ru.practicum.ewm.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,20 +24,27 @@ import java.util.List;
 @RestController
 @RequestMapping
 @Slf4j
-@RequiredArgsConstructor
 public class PublicController {
 
+    @Autowired
     private CompilationService compilationService;
-
+    @Autowired
     private CategoryService categoryService;
-
+    @Autowired
     private EventService eventService;
-
+    @Autowired
     private final StatClient statClient;
 
     private static final String URI_MAIN_SERVICE = "/events/";
 
     private static final String APP_MAIN_SERVICE = "main-service";
+
+    public PublicController(CompilationService compilationService, CategoryService categoryService, EventService eventService, StatClient statClient) {
+        this.compilationService = compilationService;
+        this.categoryService = categoryService;
+        this.eventService = eventService;
+        this.statClient = statClient;
+    }
 
     @GetMapping("/compilations")
     public List<CompilationDto> getCompilations(@RequestParam(defaultValue = "0") Integer from,
