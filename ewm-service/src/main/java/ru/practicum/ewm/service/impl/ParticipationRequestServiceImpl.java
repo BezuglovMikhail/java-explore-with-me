@@ -53,7 +53,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             ParticipationRequest checkRequest = partRequestRepository.findByRequester_IdAndEvent_Id(userId, eventId);
             if (userId.equals(event.getInitiator().getId())
                     || !event.getState().equals(State.PUBLISHED)
-                    || (event.getParticipantLimit() == event.getConfirmedRequests()
+                    || (event.getParticipantLimit().equals(event.getConfirmedRequests())
                     && event.getParticipantLimit() != 0)
                     || !Objects.isNull(checkRequest)) {
 

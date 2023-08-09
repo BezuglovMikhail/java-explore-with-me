@@ -124,11 +124,11 @@ public class EventServiceImpl implements EventService {
             category = oldEvent.getCategory();
         }
         if (updateEventAdminRequest.getStateAction() != null) {
-            if (updateEventAdminRequest.getStateAction() == State.PUBLISH_EVENT
-                    && oldEvent.getState() == State.PENDING) {
+            if (updateEventAdminRequest.getStateAction().equals(State.PUBLISH_EVENT)
+                    && oldEvent.getState().equals(State.PENDING)) {
                 updateEventAdminRequest.setStateAction(State.PUBLISHED);
-            } else if (updateEventAdminRequest.getStateAction() == State.REJECT_EVENT
-                    && oldEvent.getState() == State.PENDING) {
+            } else if (updateEventAdminRequest.getStateAction().equals(State.REJECT_EVENT)
+                    && oldEvent.getState().equals(State.PENDING)) {
                 updateEventAdminRequest.setStateAction(State.CANCELED);
             } else {
                 throw new IncorrectParameterException("Incorrect parameter");
@@ -155,7 +155,7 @@ public class EventServiceImpl implements EventService {
             category = oldEvent.getCategory();
         }
         if (updateEventUserRequest.getStateAction() != null
-                && updateEventUserRequest.getStateAction() != State.CANCEL_REVIEW) {
+                && !updateEventUserRequest.getStateAction().equals(State.CANCEL_REVIEW)) {
             updateEventUserRequest.setStateAction(State.PENDING);
         } else {
             updateEventUserRequest.setStateAction(State.CANCELED);
