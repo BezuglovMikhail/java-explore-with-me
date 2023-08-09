@@ -1,33 +1,20 @@
 package ru.practicum.stats.exeption;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import lombok.Getter;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import java.time.LocalDateTime;
-
-@Slf4j
-@Data
 public class ValidationException extends RuntimeException {
 
-    private String error;
-    private String message;
-    private String reason;
+    public static final String REASON = "Object failed validation";
 
-    @Enumerated(EnumType.STRING)
-    private HttpStatus status;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
-    private LocalDateTime timestamp;
+    @Getter
+    private final String reason;
 
-    public ValidationException(String error, String message, String reason, HttpStatus status, LocalDateTime timestamp) {
-        this.error = error;
-        this.message = message;
+    public ValidationException(String reason, String message) {
+        super(message);
         this.reason = reason;
-        this.status = status;
-        this.timestamp = timestamp;
-        log.error(message);
+    }
+
+    public ValidationException(String message) {
+        this(REASON, message);
     }
 }

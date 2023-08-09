@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.CustomPageRequest;
@@ -19,7 +18,6 @@ import ru.practicum.ewm.repository.CategoryRepository;
 import ru.practicum.ewm.service.CategoryService;
 
 import javax.validation.ConstraintViolationException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,8 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             return CategoryMapper.toCategoryDto(repository.save(CategoryMapper.toCategory(newCategoryDto)));
         } catch (ConstraintViolationException e) {
-            throw new ValidationException(e.getClass().getName(), e.getMessage(), e.getLocalizedMessage(),
-                    HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new ValidationException("Validation exception");
         }
     }
 
@@ -65,11 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
             return CategoryMapper.toCategoryDto(repository.save(CategoryMapper.toCategoryUpdate(categoryDto, catId)));
 
         } else {
-            throw new IncorrectParameterException(getClass().getName(), "Integrity constraint has been violated.",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.CONFLICT, LocalDateTime.now());
+            throw new IncorrectParameterException("Incorrect parameter");
         }
     }
 

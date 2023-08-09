@@ -26,5 +26,4 @@ public class SearchFilter {
     String text;
     Boolean paid;
     Boolean onlyAvailable;
-
 }

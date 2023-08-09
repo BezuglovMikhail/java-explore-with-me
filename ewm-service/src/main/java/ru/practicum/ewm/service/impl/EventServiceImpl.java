@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -81,15 +80,10 @@ public class EventServiceImpl implements EventService {
             try {
                 return toEventFullDto(eventRepository.save(toEvent(newEventDto, category, initiator, newLocation)));
             } catch (DataIntegrityViolationException | ConstraintViolationException e) {
-                throw new ValidationException(e.getClass().getName(), e.getMessage(), e.getLocalizedMessage(),
-                        HttpStatus.BAD_REQUEST, LocalDateTime.now());
+                throw new ValidationException("Validation exception");
             }
         } else {
-            throw new ValidationException(getClass().getName(), "Integrity constraint has been violated.",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new ValidationException("Validation exception");
         }
     }
 
@@ -137,11 +131,7 @@ public class EventServiceImpl implements EventService {
                     && oldEvent.getState() == State.PENDING) {
                 updateEventAdminRequest.setStateAction(State.CANCELED);
             } else {
-                throw new IncorrectParameterException(getClass().getName(), "Integrity constraint has been violated.",
-                        "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                                " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                                " could not execute statement",
-                        HttpStatus.CONFLICT, LocalDateTime.now());
+                throw new IncorrectParameterException("Incorrect parameter");
             }
         }
 
@@ -272,11 +262,7 @@ public class EventServiceImpl implements EventService {
             return;
         }
         if (end.isBefore(start)) {
-            throw new ValidationException(getClass().getName(), "Integrity constraint has been violated.",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new ValidationException("Validation exception");
         }
     }
 
@@ -287,22 +273,14 @@ public class EventServiceImpl implements EventService {
                     && (eventDay.isBefore(LocalDateTime.now().plusHours(1L))
                     || eventDay.isBefore(LocalDateTime.now()))) {
 
-                throw new ValidationException(getClass().getName(), "Integrity constraint has been violated.",
-                        "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                                " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                                " could not execute statement",
-                        HttpStatus.BAD_REQUEST, LocalDateTime.now());
+                throw new ValidationException("Validation exception");
             }
         }
     }
 
     private void checkStateForUpdatePrivate(State state) throws IncorrectParameterException {
         if (state.equals(State.PUBLISHED)) {
-            throw new IncorrectParameterException(getClass().getName(), "Integrity constraint has been violated.",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new IncorrectParameterException("Incorrect parameter");
         }
     }
 

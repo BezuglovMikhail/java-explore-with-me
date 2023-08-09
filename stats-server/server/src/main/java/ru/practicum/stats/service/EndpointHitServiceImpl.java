@@ -1,7 +1,6 @@
 package ru.practicum.stats.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats.dto.EndpointHitDto;
 import ru.practicum.stats.dto.ViewStatDto;
@@ -65,11 +64,7 @@ public class EndpointHitServiceImpl implements EndpointHitService {
             return;
         }
         if (end.isBefore(start)) {
-            throw new ValidationException(getClass().getName(), "Integrity constraint has been violated.",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new ValidationException("Validation exception");
         }
     }
 }

@@ -2,7 +2,6 @@ package ru.practicum.ewm.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.dto.ParticipationRequestDto;
@@ -21,7 +20,6 @@ import ru.practicum.ewm.request.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.service.ParticipationRequestService;
 import ru.practicum.ewm.status.State;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -59,12 +57,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                     && event.getParticipantLimit() != 0)
                     || !Objects.isNull(checkRequest)) {
 
-                throw new IncorrectParameterException(getClass().getName(), "User with id = " + userId +
-                        " don`t have request",
-                        "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                                " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                                " could not execute statement",
-                        HttpStatus.CONFLICT, LocalDateTime.now());
+                throw new IncorrectParameterException("Incorrect parameter");
             }
 
             request = partRequestRepository.save(ParticipationRequestMapper.toParticipationRequest(event, initiator));
@@ -73,12 +66,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                 eventRepository.save(event);
             }
         } else {
-            throw new ValidationException(getClass().getName(), "User with id = " + userId +
-                    " don`t have request",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new ValidationException("Validation exception");
         }
         return ParticipationRequestMapper.toParticipationRequestDto(request);
     }
@@ -101,12 +89,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             oldRequest.setState(State.CANCELED);
             return ParticipationRequestMapper.toParticipationRequestDto(partRequestRepository.save(oldRequest));
         } else {
-            throw new IncorrectParameterException(getClass().getName(), "User with id = " + userId +
-                    " don`t have request with id = " + requestId,
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.CONFLICT, LocalDateTime.now());
+            throw new IncorrectParameterException("Incorrect parameter");
         }
     }
 
@@ -115,12 +98,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                 && !oldRequestState.equals(State.PUBLISHED)) {
             return;
         } else {
-            throw new IncorrectParameterException(getClass().getName(), "User with id = " + userId +
-                    " don`t have request with id = ",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.CONFLICT, LocalDateTime.now());
+            throw new IncorrectParameterException("Incorrect parameter");
         }
     }
 
@@ -140,11 +118,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         if (checkEvent.getParticipantLimit() <= 0
                 || checkEvent.getConfirmedRequests() >= checkEvent.getParticipantLimit()
                 || !checkEvent.getRequestModeration()) {
-            throw new IncorrectParameterException(getClass().getName(), "Integrity constraint has been violated.",
-                    "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                            " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                            " could not execute statement",
-                    HttpStatus.CONFLICT, LocalDateTime.now());
+            throw new IncorrectParameterException("Incorrect parameter");
         }
         List<ParticipationRequestDto> confirmed = new ArrayList<>();
         List<ParticipationRequestDto> rejected = new ArrayList<>();
@@ -152,11 +126,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
         for (ParticipationRequest request : requestList) {
             if (!request.getState().equals(State.PENDING)) {
-                throw new IncorrectParameterException(getClass().getName(), "Integrity constraint has been violated.",
-                        "could not execute statement; SQL [n/a]; constraint [uq_category_name];" +
-                                " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                                " could not execute statement",
-                        HttpStatus.CONFLICT, LocalDateTime.now());
+                throw new IncorrectParameterException("Incorrect parameter");
             }
             if (updateRequest.getStatus() == State.CONFIRMED
                     && checkEvent.getParticipantLimit() - checkEvent.getConfirmedRequests() > 0) {
