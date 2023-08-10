@@ -1,16 +1,14 @@
 package ru.practicum.ewm.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.model.User;
-import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.CustomPageRequest;
 import ru.practicum.ewm.dto.UserDto;
 import ru.practicum.ewm.exeption.NotFoundException;
+import ru.practicum.ewm.model.User;
+import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.request.NewUserRequest;
 import ru.practicum.ewm.service.UserService;
 
@@ -20,10 +18,8 @@ import java.util.Objects;
 import static ru.practicum.ewm.mapper.UserMapper.*;
 
 @Service
-@Slf4j
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserRepository repository;
 
     public UserServiceImpl(UserRepository repository) {

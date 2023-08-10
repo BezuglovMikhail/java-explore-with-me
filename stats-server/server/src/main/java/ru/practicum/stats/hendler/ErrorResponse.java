@@ -14,29 +14,29 @@ import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public class ErrorResponse {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ErrorResponse {
 
-        @JsonInclude(NON_NULL)
-        List<String> errors;
+    @JsonInclude(NON_NULL)
+    private List<String> errors;
 
-        private String message;
+    private String message;
 
-        private String reason;
+    private String reason;
 
-        @Enumerated(EnumType.STRING)
-        private HttpStatus status;
+    @Enumerated(EnumType.STRING)
+    private HttpStatus status;
 
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
-        private LocalDateTime timestamp;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
+    private LocalDateTime timestamp;
 
-        String mapping;
+    private String mapping;
 
-        @JsonInclude(NON_NULL)
-        String details;
+    @JsonInclude(NON_NULL)
+    private String details;
 
-        @JsonInclude(NON_NULL)
-        List<String> trace;
-    }
+    @JsonInclude(NON_NULL)
+    private List<String> trace;
+}

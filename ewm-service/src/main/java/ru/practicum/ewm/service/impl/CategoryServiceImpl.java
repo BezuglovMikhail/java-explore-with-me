@@ -1,7 +1,5 @@
 package ru.practicum.ewm.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -22,10 +20,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
     private CategoryRepository repository;
 
     public CategoryServiceImpl(CategoryRepository repository) {
@@ -53,11 +49,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto, long catId) {
-        repository.findById(catId)
-                .orElseThrow(() -> new NotFoundException("Category whit id = " + catId + " not found in database."));
         categoryDto.setId(catId);
         Category oldCategory = repository.findByName(categoryDto.getName());
-        if (Objects.isNull(oldCategory) || categoryDto.getName().equals(oldCategory.getName())) {
+        if (Objects.isNull(oldCategory)
+                || categoryDto.getName().equals(oldCategory.getName())
+                || oldCategory.getName().isBlank()) {
+            repository.findById(catId)
+                    .orElseThrow(() -> new NotFoundException("Category whit id = " + catId + " not found in database."));
 
             return CategoryMapper.toCategoryDto(repository.save(CategoryMapper.toCategoryUpdate(categoryDto, catId)));
 

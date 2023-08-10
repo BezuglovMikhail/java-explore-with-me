@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public class ValidationException extends RuntimeException {
 
-    public static final String REASON = "Object failed validation";
+    private static final String REASON = "Object failed validation";
 
     @Getter
     private final String reason;

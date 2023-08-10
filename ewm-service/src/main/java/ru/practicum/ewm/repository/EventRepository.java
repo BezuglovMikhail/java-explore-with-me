@@ -7,13 +7,13 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.status.State;
 
-import java.util.List;
+import java.util.Set;
 
 public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPredicateExecutor<Event> {
 
     Page<Event> findAllByInitiator_Id(Long userId, Pageable pageable);
 
-    List<Event> findByIdIn(List<Long> events);
+    Set<Event> findByIdIn(Set<Long> events);
 
     Event findByIdAndState(Long eventId, State state);
 }

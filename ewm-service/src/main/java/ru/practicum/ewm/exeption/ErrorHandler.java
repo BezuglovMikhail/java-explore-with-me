@@ -28,10 +28,10 @@ import static org.springframework.http.HttpStatus.*;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    public static final String UNEXPECTED_ERROR = "Unexpected error";
-    public static final String INTEGRITY_CONSTRAINT_HAS_BEEN_VIOLATED = "Integrity constraint has been violated.";
-    public static final String INCORRECTLY_MADE_REQUEST = "Incorrectly made request.";
-    public static final String CONSTRAIN_EXCEPTION = "Constraint exception";
+    private static final String UNEXPECTED_ERROR = "Unexpected error";
+    private static final String INTEGRITY_CONSTRAINT_HAS_BEEN_VIOLATED = "Integrity constraint has been violated.";
+    private static final String INCORRECTLY_MADE_REQUEST = "Incorrectly made request.";
+    private static final String CONSTRAIN_EXCEPTION = "Constraint exception";
 
 
     @ExceptionHandler(ValidationException.class)

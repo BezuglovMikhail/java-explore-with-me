@@ -1,12 +1,13 @@
 package ru.practicum.ewm.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.dto.EventFullDto;
+import ru.practicum.ewm.dto.EventShortDto;
+import ru.practicum.ewm.dto.NewEventDto;
 import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.Location;
 import ru.practicum.ewm.model.User;
-import ru.practicum.ewm.dto.EventShortDto;
-import ru.practicum.ewm.dto.NewEventDto;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
 import ru.practicum.ewm.status.State;
@@ -15,12 +16,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@UtilityClass
 public class EventMapper {
 
-    private EventMapper() {
-    }
-
-    public static Event toEvent(NewEventDto newEventDto, Category category, User initiator, Location newLocation) {
+    public Event toEvent(NewEventDto newEventDto, Category category, User initiator, Location newLocation) {
         Event newEvent = new Event();
         newEvent.setAnnotation(newEventDto.getAnnotation());
         newEvent.setCategory(category);
@@ -30,17 +29,16 @@ public class EventMapper {
         newEvent.setEventDate(newEventDto.getEventDate());
         newEvent.setInitiator(initiator);
         newEvent.setLocation(newLocation);
-        newEvent.setPaid(newEventDto.getPaid());
+        newEvent.setPaid(newEventDto.isPaid());
         newEvent.setParticipantLimit(newEventDto.getParticipantLimit());
-        newEvent.setPublishedOn(newEventDto.getPublishedOn());
-        newEvent.setRequestModeration(newEventDto.getRequestModeration());
+        newEvent.setRequestModeration(newEventDto.isRequestModeration());
         newEvent.setState(State.PENDING);
         newEvent.setTitle(newEventDto.getTitle());
         newEvent.setViews(0L);
         return newEvent;
     }
 
-    public static Event toUpdateEvent(UpdateEventAdminRequest updateEventAdminRequest, Event oldEvent, Category category) {
+    public Event toUpdateEvent(UpdateEventAdminRequest updateEventAdminRequest, Event oldEvent, Category category) {
         Event updateEvent = new Event();
         updateEvent.setId(oldEvent.getId());
         updateEvent.setAnnotation(updateEventAdminRequest.getAnnotation() != null
@@ -78,7 +76,7 @@ public class EventMapper {
         return updateEvent;
     }
 
-    public static Event toUpdateEvent(UpdateEventUserRequest updateEventUserRequest, Event oldEvent, Category category) {
+    public Event toUpdateEvent(UpdateEventUserRequest updateEventUserRequest, Event oldEvent, Category category) {
         Event updateEvent = new Event();
         updateEvent.setId(oldEvent.getId());
         updateEvent.setAnnotation(updateEventUserRequest.getAnnotation() != null
@@ -118,7 +116,7 @@ public class EventMapper {
         return updateEvent;
     }
 
-    public static EventFullDto toEventFullDto(Event event) {
+    public EventFullDto toEventFullDto(Event event) {
         EventFullDto eventFullDto = new EventFullDto();
         eventFullDto.setId(event.getId());
         eventFullDto.setAnnotation(event.getAnnotation());
@@ -139,7 +137,7 @@ public class EventMapper {
         return eventFullDto;
     }
 
-    public static EventShortDto toEventShortDto(Event event) {
+    public EventShortDto toEventShortDto(Event event) {
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setId(event.getId());
         eventShortDto.setAnnotation(event.getAnnotation());
@@ -153,7 +151,7 @@ public class EventMapper {
         return eventShortDto;
     }
 
-    public static List<EventShortDto> mapToEventShortDto(Iterable<Event> events) {
+    public List<EventShortDto> mapToEventShortDto(Iterable<Event> events) {
         List<EventShortDto> result = new ArrayList<>();
 
         for (Event event : events) {
@@ -162,7 +160,7 @@ public class EventMapper {
         return result;
     }
 
-    public static List<EventFullDto> mapToEventFullDto(Iterable<Event> events) {
+    public List<EventFullDto> mapToEventFullDto(Iterable<Event> events) {
         List<EventFullDto> result = new ArrayList<>();
 
         for (Event event : events) {

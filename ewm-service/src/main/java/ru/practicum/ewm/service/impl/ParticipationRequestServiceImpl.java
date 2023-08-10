@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Slf4j
 public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
     @Autowired
@@ -35,7 +34,8 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     @Autowired
     private final UserRepository userRepository;
 
-    public ParticipationRequestServiceImpl(ParticipationRequestRepository partRequestRepository, EventRepository eventRepository, UserRepository userRepository) {
+    public ParticipationRequestServiceImpl(ParticipationRequestRepository partRequestRepository,
+                                           EventRepository eventRepository, UserRepository userRepository) {
         this.partRequestRepository = partRequestRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;

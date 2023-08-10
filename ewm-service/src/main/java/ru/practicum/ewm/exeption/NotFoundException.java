@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public class NotFoundException extends RuntimeException {
 
-    public static final String REASON = "The required object was not found.";
+    private static final String REASON = "The required object was not found.";
 
     @Getter
     private final String reason;

@@ -5,8 +5,7 @@ import lombok.Data;
 import ru.practicum.ewm.model.Location;
 import ru.practicum.ewm.status.State;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -28,11 +27,11 @@ public class UpdateEventAdminRequest {
 
     private Boolean paid;
 
+    @PositiveOrZero
     private Integer participantLimit;
 
     private Boolean requestModeration;
 
-    @Enumerated(EnumType.STRING)
     private State stateAction;
 
     @Size(min = 3, max = 120)

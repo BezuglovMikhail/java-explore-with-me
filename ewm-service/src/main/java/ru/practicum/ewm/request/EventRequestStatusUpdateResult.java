@@ -8,9 +8,9 @@ import java.util.List;
 @Data
 public class EventRequestStatusUpdateResult {
 
-    List<ParticipationRequestDto> confirmedRequests;
+    private List<ParticipationRequestDto> confirmedRequests;
 
-    List<ParticipationRequestDto> rejectedRequests;
+    private List<ParticipationRequestDto> rejectedRequests;
 
     public EventRequestStatusUpdateResult(List<ParticipationRequestDto> confirmedRequests,
                                           List<ParticipationRequestDto> rejectedRequests) {

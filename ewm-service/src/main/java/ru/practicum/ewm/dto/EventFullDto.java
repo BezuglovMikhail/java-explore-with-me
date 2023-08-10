@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.ewm.model.Location;
 import ru.practicum.ewm.status.State;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 
 @Data
@@ -46,7 +44,6 @@ public class EventFullDto {
 
     private Boolean requestModeration;
 
-    @Enumerated(EnumType.STRING)
     private State state;
 
     private String title;

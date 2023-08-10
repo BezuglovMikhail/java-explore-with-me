@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -27,7 +27,7 @@ public class Compilation {
             name = "compilations_events",
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
-    List<Event> events;
+    private Set<Event> events;
 
     @NotBlank
     @Size(min = 1, max = 50)

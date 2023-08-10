@@ -8,6 +8,7 @@ import ru.practicum.ewm.request.UpdateEventUserRequest;
 import ru.practicum.ewm.status.EventSort;
 import ru.practicum.ewm.status.State;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
@@ -27,11 +28,11 @@ public interface EventService {
     List<EventShortDto> getEventsByUserId(Long userId, Integer from, Integer size);
 
     List<EventFullDto> adminFindEventsWhitFilter(List<Long> users, List<State> states, List<Long> categories,
-                                            String rangeStartFormatter, String rangeEndFormatter,
+                                                 LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                             Integer from, Integer size);
 
     List<EventShortDto> publicFindEventsWhitFilter(String text, Boolean paid, Boolean onlyAvailable, EventSort sort,
-                                                  List<Long> users, List<Long> categories,
-                                                  String rangeStartFormatter, String rangeEndFormatter,
-                                                  Integer from, Integer size);
+                                                   List<Long> users, List<Long> categories,
+                                                   LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                   Integer from, Integer size);
 }

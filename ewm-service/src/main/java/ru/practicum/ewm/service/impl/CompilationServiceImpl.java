@@ -1,6 +1,5 @@
 package ru.practicum.ewm.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -18,14 +17,13 @@ import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.request.UpdateCompilationRequest;
 import ru.practicum.ewm.service.CompilationService;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
-@Slf4j
 public class CompilationServiceImpl implements CompilationService {
 
-    @Autowired
     private CompilationRepository compilationRepository;
     @Autowired
     private EventRepository eventRepository;
@@ -38,7 +36,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     @Override
     public CompilationDto save(NewCompilationDto newCompilationDto) {
-        List<Event> events = new ArrayList<>();
+        Set<Event> events = new HashSet<>();
         if (newCompilationDto.getEvents() != null) {
             events = eventRepository.findByIdIn(newCompilationDto.getEvents());
         }
@@ -59,7 +57,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto updateCompilation(UpdateCompilationRequest updateCompilationRequest, long compId) {
         Compilation old = compilationRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("Compilation whit id = " + compId + " not found in database."));
-        List<Event> events = new ArrayList<>();
+        Set<Event> events = new HashSet<>();
         if (updateCompilationRequest.getEvents() != null) {
             events = eventRepository.findByIdIn(updateCompilationRequest.getEvents());
         }

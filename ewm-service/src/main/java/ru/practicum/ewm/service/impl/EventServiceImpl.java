@@ -32,7 +32,6 @@ import ru.practicum.stats.client.StatClient;
 import ru.practicum.stats.dto.ViewStatDto;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -57,7 +56,9 @@ public class EventServiceImpl implements EventService {
 
     private final String format = ("yyyy-MM-dd HH:mm:ss");
 
-    public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, StatClient statsClient) {
+    public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository,
+                            CategoryRepository categoryRepository, LocationRepository locationRepository,
+                            StatClient statsClient) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -182,20 +183,18 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventFullDto> adminFindEventsWhitFilter(List<Long> users, List<State> states, List<Long> categories,
-                                                        String rangeStart, String rangeEnd,
+                                                        LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                         Integer from, Integer size) {
         Sort sort = Sort.by("id").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sort);
 
-        LocalDateTime start = toLocalDateTime(rangeStart);
-        LocalDateTime end = toLocalDateTime(rangeEnd);
-        checkStartEndSearch(start, end);
+        checkStartEndSearch(rangeStart, rangeEnd);
         SearchFilter filter = new SearchFilter(
                 users,
                 states,
                 categories,
-                start,
-                end,
+                rangeStart,
+                rangeEnd,
                 null,
                 null,
                 null
@@ -209,23 +208,21 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventShortDto> publicFindEventsWhitFilter(String text, Boolean paid, Boolean onlyAvailable,
                                                           EventSort sort, List<Long> users,
-                                                          List<Long> categories, String rangeStart,
-                                                          String rangeEnd, Integer from, Integer size) {
+                                                          List<Long> categories, LocalDateTime rangeStart,
+                                                          LocalDateTime rangeEnd, Integer from, Integer size) {
         Sort sortPage = sort == EventSort.EVENT_DATE
                 ? Sort.by("eventDate").ascending()
                 : Sort.by("views").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sortPage);
 
-        LocalDateTime start = toLocalDateTime(rangeStart);
-        LocalDateTime end = toLocalDateTime(rangeEnd);
-        checkStartEndSearch(start, end);
+        checkStartEndSearch(rangeStart, rangeEnd);
 
         SearchFilter filter = new SearchFilter(
                 users,
                 List.of(State.PUBLISHED),
                 categories,
-                start,
-                end,
+                rangeStart,
+                rangeEnd,
                 text,
                 paid,
                 onlyAvailable
@@ -251,10 +248,6 @@ public class EventServiceImpl implements EventService {
                         ? (qEvent.annotation.likeIgnoreCase(filter.getText()).or(qEvent.description.likeIgnoreCase(filter.getText()))) : null)
                 .and(!isNullOrEmpty.test(filter.getOnlyAvailable())
                         ? qEvent.participantLimit.eq(0).or(qEvent.confirmedRequests.lt(qEvent.participantLimit)) : null);
-    }
-
-    private LocalDateTime toLocalDateTime(String value) {
-        return value != null ? LocalDateTime.parse(value, DateTimeFormatter.ofPattern(format)) : null;
     }
 
     private void checkStartEndSearch(LocalDateTime start, LocalDateTime end) {

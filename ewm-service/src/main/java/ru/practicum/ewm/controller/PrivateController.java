@@ -1,7 +1,6 @@
 package ru.practicum.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.EventFullDto;
@@ -22,9 +21,8 @@ import java.util.List;
 @Slf4j
 public class PrivateController {
 
-    @Autowired
     private EventService eventService;
-    @Autowired
+
     private ParticipationRequestService partRequestService;
 
     public PrivateController(EventService eventService, ParticipationRequestService partRequestService) {
@@ -43,8 +41,8 @@ public class PrivateController {
 
     @GetMapping("/events")
     public List<EventShortDto> getEventsByUserId(@PathVariable("userId") Long userId,
-                                                @RequestParam(defaultValue = "0") Integer from,
-                                                @RequestParam(defaultValue = "10") Integer size) {
+                                                 @RequestParam(defaultValue = "0") Integer from,
+                                                 @RequestParam(defaultValue = "10") Integer size) {
         List<EventShortDto> eventsUser = eventService.getEventsByUserId(userId, from, size);
         log.info("Request Get received to find all events user`s whit id = {}", userId);
         return eventsUser;

@@ -1,5 +1,6 @@
 package ru.practicum.ewm.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.dto.ParticipationRequestDto;
@@ -10,12 +11,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@UtilityClass
 public class ParticipationRequestMapper {
 
-    private ParticipationRequestMapper() {
-    }
-
-    public static ParticipationRequestDto toParticipationRequestDto(ParticipationRequest partRequest) {
+    public ParticipationRequestDto toParticipationRequestDto(ParticipationRequest partRequest) {
         ParticipationRequestDto participationRequestDto = new ParticipationRequestDto();
         participationRequestDto.setId(partRequest.getId());
         participationRequestDto.setCreated(partRequest.getCreated());
@@ -26,7 +25,7 @@ public class ParticipationRequestMapper {
         return participationRequestDto;
     }
 
-    public static ParticipationRequest toParticipationRequest(Event event, User requester) {
+    public ParticipationRequest toParticipationRequest(Event event, User requester) {
         ParticipationRequest participationRequest = new ParticipationRequest();
         participationRequest.setCreated(LocalDateTime.now());
         participationRequest.setEvent(event);
@@ -41,7 +40,7 @@ public class ParticipationRequestMapper {
         return participationRequest;
     }
 
-    public static List<ParticipationRequestDto> mapToParticipationRequestDto(List<ParticipationRequest> participationRequests) {
+    public List<ParticipationRequestDto> mapToParticipationRequestDto(List<ParticipationRequest> participationRequests) {
         List<ParticipationRequestDto> result = new ArrayList<>();
 
         for (ParticipationRequest participationRequest : participationRequests) {

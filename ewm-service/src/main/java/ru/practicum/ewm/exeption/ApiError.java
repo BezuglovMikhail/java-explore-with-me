@@ -20,7 +20,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 public class ApiError {
 
     @JsonInclude(NON_NULL)
-    List<String> errors;
+    private List<String> errors;
 
     private String message;
 
@@ -32,11 +32,11 @@ public class ApiError {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
     private LocalDateTime timestamp;
 
-    String mapping;
+    private String mapping;
 
     @JsonInclude(NON_NULL)
-    String details;
+    private String details;
 
     @JsonInclude(NON_NULL)
-    List<String> trace;
+    private List<String> trace;
 }

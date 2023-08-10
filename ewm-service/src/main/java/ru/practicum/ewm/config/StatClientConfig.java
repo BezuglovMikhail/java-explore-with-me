@@ -14,7 +14,8 @@ public class StatClientConfig {
     @Value("${stats-client}")
     private String serverUrl;
 
-    private String app = "ewm-main";
+    @Value("${app-name}")
+    private String app;
 
     private final RestTemplateBuilder builder;
 

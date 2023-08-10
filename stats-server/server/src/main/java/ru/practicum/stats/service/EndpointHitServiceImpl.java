@@ -1,6 +1,5 @@
 package ru.practicum.stats.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats.dto.EndpointHitDto;
 import ru.practicum.stats.dto.ViewStatDto;
@@ -21,7 +20,6 @@ import static ru.practicum.stats.dtoStat.ViewStatMapper.mapToViewStatDto;
 @Service
 public class EndpointHitServiceImpl implements EndpointHitService {
 
-    @Autowired
     private final EndpointHitRepository repository;
 
     public EndpointHitServiceImpl(EndpointHitRepository repository) {

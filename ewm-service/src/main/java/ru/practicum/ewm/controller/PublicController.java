@@ -1,7 +1,7 @@
 package ru.practicum.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +19,7 @@ import ru.practicum.stats.client.StatClient;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -26,20 +27,16 @@ import java.util.List;
 @Slf4j
 public class PublicController {
 
-    @Autowired
     private CompilationService compilationService;
-    @Autowired
+
     private CategoryService categoryService;
-    @Autowired
+
     private EventService eventService;
-    @Autowired
+
     private final StatClient statClient;
 
-    private static final String URI_MAIN_SERVICE = "/events/";
-
-    private static final String APP_MAIN_SERVICE = "main-service";
-
-    public PublicController(CompilationService compilationService, CategoryService categoryService, EventService eventService, StatClient statClient) {
+    public PublicController(CompilationService compilationService, CategoryService categoryService,
+                            EventService eventService, StatClient statClient) {
         this.compilationService = compilationService;
         this.categoryService = categoryService;
         this.eventService = eventService;
@@ -96,8 +93,12 @@ public class PublicController {
                                                                           @RequestParam(required = false) EventSort sort,
                                                                           @RequestParam(required = false) List<Long> users,
                                                                           @RequestParam(required = false) List<Long> categories,
-                                                                          @RequestParam(required = false) String rangeStart,
-                                                                          @RequestParam(required = false) String rangeEnd,
+                                                                          @RequestParam(required = false)
+                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                                          LocalDateTime rangeStart,
+                                                                          @RequestParam(required = false)
+                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                                          LocalDateTime rangeEnd,
                                                                           @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                                           @Positive @RequestParam(defaultValue = "10") Integer size) {
 

@@ -13,17 +13,22 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class SearchFilter {
-    List<Long> users;
-    List<State> states;
-    List<Long> categories;
+
+    private List<Long> users;
+
+    private List<State> states;
+
+    private List<Long> categories;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime rangeStart;
+    private LocalDateTime rangeStart;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime rangeEnd;
+    private LocalDateTime rangeEnd;
 
-    String text;
-    Boolean paid;
-    Boolean onlyAvailable;
+    private String text;
+
+    private Boolean paid;
+
+    private Boolean onlyAvailable;
 }

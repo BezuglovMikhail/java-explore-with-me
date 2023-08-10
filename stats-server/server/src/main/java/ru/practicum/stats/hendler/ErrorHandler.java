@@ -26,9 +26,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    public static final String UNEXPECTED_ERROR = "Unexpected error";
+    private static final String UNEXPECTED_ERROR = "Unexpected error";
 
-    public static final String INCORRECTLY_Argument = "Incorrectly argument.";
+    private static final String INCORRECTLY_Argument = "Incorrectly argument.";
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
