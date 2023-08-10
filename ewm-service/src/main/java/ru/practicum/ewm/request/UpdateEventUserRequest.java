@@ -1,7 +1,8 @@
 package ru.practicum.ewm.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.ewm.model.Location;
 import ru.practicum.ewm.status.State;
 
@@ -9,7 +10,8 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 public class UpdateEventUserRequest {
 
     @Size(min = 20, max = 2000)

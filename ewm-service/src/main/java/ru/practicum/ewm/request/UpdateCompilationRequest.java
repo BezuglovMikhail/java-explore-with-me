@@ -1,11 +1,13 @@
 package ru.practicum.ewm.request;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 public class UpdateCompilationRequest {
 
     private Set<Long> events;

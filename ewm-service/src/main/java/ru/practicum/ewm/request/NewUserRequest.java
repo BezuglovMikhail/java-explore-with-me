@@ -1,8 +1,10 @@
 package ru.practicum.ewm.request;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class NewUserRequest {
     private String email;
     private String name;

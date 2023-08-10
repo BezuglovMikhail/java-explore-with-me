@@ -1,16 +1,14 @@
 package ru.practicum.ewm.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import ru.practicum.ewm.status.State;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
-@Builder
+@Getter
+@Setter
 @AllArgsConstructor
 public class SearchFilter {
 
