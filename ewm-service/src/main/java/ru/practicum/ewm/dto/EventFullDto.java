@@ -2,7 +2,6 @@ package ru.practicum.ewm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.ewm.model.Location;
 import ru.practicum.ewm.status.State;
 
 import java.time.LocalDateTime;
@@ -29,7 +28,7 @@ public class EventFullDto {
 
     private UserShortDto initiator;
 
-    private Location location;
+    private LocationDto location;
 
     private Boolean paid;
 

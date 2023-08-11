@@ -21,7 +21,6 @@ import ru.practicum.ewm.model.*;
 import ru.practicum.ewm.model.QEvent;
 import ru.practicum.ewm.repository.CategoryRepository;
 import ru.practicum.ewm.repository.EventRepository;
-import ru.practicum.ewm.repository.LocationRepository;
 import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
@@ -32,13 +31,12 @@ import ru.practicum.stats.client.StatClient;
 import ru.practicum.stats.dto.ViewStatDto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static ru.practicum.ewm.mapper.EventMapper.*;
+import static ru.practicum.ewm.status.EventSort.VIEWS;
 
 @Service
 @Slf4j
@@ -50,19 +48,17 @@ public class EventServiceImpl implements EventService {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
-    private LocationRepository locationRepository;
-    @Autowired
     private final StatClient statsClient;
 
     private final String format = ("yyyy-MM-dd HH:mm:ss");
 
     public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository,
-                            CategoryRepository categoryRepository, LocationRepository locationRepository,
+                            CategoryRepository categoryRepository,
                             StatClient statsClient) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
-        this.locationRepository = locationRepository;
+        //this.locationRepository = locationRepository;
         this.statsClient = statsClient;
     }
 
@@ -76,10 +72,9 @@ public class EventServiceImpl implements EventService {
 
         if (newEventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(2L))
                 || newEventDto.getEventDate().isAfter(LocalDateTime.now())) {
-            Location newLocation = locationRepository.save(newEventDto.getLocation());
 
             try {
-                return toEventFullDto(eventRepository.save(toEvent(newEventDto, category, initiator, newLocation)));
+                return toEventFullDto(eventRepository.save(toEvent(newEventDto, category, initiator)));
             } catch (DataIntegrityViolationException | ConstraintViolationException e) {
                 throw new ValidationException("Validation exception");
             }
@@ -212,7 +207,7 @@ public class EventServiceImpl implements EventService {
                                                           LocalDateTime rangeEnd, Integer from, Integer size) {
         Sort sortPage = sort == EventSort.EVENT_DATE
                 ? Sort.by("eventDate").ascending()
-                : Sort.by("views").ascending();
+                : Sort.by("id").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sortPage);
 
         checkStartEndSearch(rangeStart, rangeEnd);
@@ -231,7 +226,13 @@ public class EventServiceImpl implements EventService {
         BooleanBuilder booleanBuilder = makeBooleanBuilder(filter);
         Page<Event> page = eventRepository.findAll(booleanBuilder, pageable);
         setViews(page.getContent());
-        return mapToEventShortDto(page);
+        List<EventShortDto> publicFindEvents = mapToEventShortDto(page);
+
+        if (!Objects.isNull(sort) && sort.equals(VIEWS)) {
+           return publicFindEvents.stream().sorted(Comparator.comparing(EventShortDto::getViews))
+                    .collect(toList());
+        }
+        return publicFindEvents;
     }
 
     private BooleanBuilder makeBooleanBuilder(SearchFilter filter) {

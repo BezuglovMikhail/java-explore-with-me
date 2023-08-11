@@ -3,7 +3,7 @@ package ru.practicum.ewm.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.ewm.model.Location;
+import ru.practicum.ewm.dto.LocationDto;
 import ru.practicum.ewm.status.State;
 
 import javax.validation.constraints.PositiveOrZero;
@@ -25,7 +25,7 @@ public class UpdateEventAdminRequest {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
-    private Location location;
+    private LocationDto location;
 
     private Boolean paid;
 

@@ -39,8 +39,9 @@ public class Event {
     @JoinColumn(name = "initiator_id", referencedColumnName = "id")
     private User initiator;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
+    //@ManyToOne(cascade = CascadeType.ALL)
+    //@JoinColumn(name = "location_id", referencedColumnName = "id")
+    @Embedded
     private Location location;
 
     private Boolean paid;
@@ -56,5 +57,6 @@ public class Event {
     @Size(min = 3, max = 120)
     private String title;
 
-    private Long views;
+    @Transient
+    private Long views = 0L;
 }

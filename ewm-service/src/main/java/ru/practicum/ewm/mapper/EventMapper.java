@@ -6,7 +6,6 @@ import ru.practicum.ewm.dto.EventShortDto;
 import ru.practicum.ewm.dto.NewEventDto;
 import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.model.Event;
-import ru.practicum.ewm.model.Location;
 import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
@@ -16,10 +15,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.practicum.ewm.mapper.LocationMapper.*;
+
 @UtilityClass
 public class EventMapper {
 
-    public Event toEvent(NewEventDto newEventDto, Category category, User initiator, Location newLocation) {
+    public Event toEvent(NewEventDto newEventDto, Category category, User initiator) {
         Event newEvent = new Event();
         newEvent.setAnnotation(newEventDto.getAnnotation());
         newEvent.setCategory(category);
@@ -28,13 +29,13 @@ public class EventMapper {
         newEvent.setDescription(newEventDto.getDescription());
         newEvent.setEventDate(newEventDto.getEventDate());
         newEvent.setInitiator(initiator);
-        newEvent.setLocation(newLocation);
+        newEvent.setLocation(toLocation(newEventDto.getLocation()));
         newEvent.setPaid(newEventDto.isPaid());
         newEvent.setParticipantLimit(newEventDto.getParticipantLimit());
         newEvent.setRequestModeration(newEventDto.isRequestModeration());
         newEvent.setState(State.PENDING);
         newEvent.setTitle(newEventDto.getTitle());
-        newEvent.setViews(0L);
+        //newEvent.setViews(0L);
         return newEvent;
     }
 
@@ -55,7 +56,7 @@ public class EventMapper {
         updateEvent.setEventDate(oldEvent.getEventDate());
         updateEvent.setInitiator(oldEvent.getInitiator());
         updateEvent.setLocation(updateEventAdminRequest.getLocation() != null
-                ? updateEventAdminRequest.getLocation()
+                ? toLocation(updateEventAdminRequest.getLocation())
                 : oldEvent.getLocation());
         updateEvent.setPaid(updateEventAdminRequest.getPaid() != null
                 ? updateEventAdminRequest.getPaid()
@@ -93,7 +94,7 @@ public class EventMapper {
         updateEvent.setEventDate(oldEvent.getEventDate());
         updateEvent.setInitiator(oldEvent.getInitiator());
         updateEvent.setLocation(updateEventUserRequest.getLocation() != null
-                ? updateEventUserRequest.getLocation()
+                ? toLocation(updateEventUserRequest.getLocation())
                 : oldEvent.getLocation());
         updateEvent.setPaid(updateEventUserRequest.getPaid() != null
                 ? updateEventUserRequest.getPaid()
@@ -126,7 +127,7 @@ public class EventMapper {
         eventFullDto.setDescription(event.getDescription());
         eventFullDto.setEventDate(event.getEventDate());
         eventFullDto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
-        eventFullDto.setLocation(event.getLocation());
+        eventFullDto.setLocation(toLocationDto(event.getLocation()));
         eventFullDto.setPaid(event.getPaid());
         eventFullDto.setParticipantLimit(event.getParticipantLimit());
         eventFullDto.setPublishedOn(event.getPublishedOn());

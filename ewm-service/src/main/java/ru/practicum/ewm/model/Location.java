@@ -6,14 +6,15 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@Entity
+//@Entity
 @NoArgsConstructor
-@Table(name = "locations")
+//@Table(name = "locations")
+@Embeddable
 public class Location {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    //private Long id;
 
     private float lat;
 
