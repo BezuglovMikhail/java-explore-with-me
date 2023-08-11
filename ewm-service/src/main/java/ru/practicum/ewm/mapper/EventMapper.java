@@ -13,6 +13,7 @@ import ru.practicum.ewm.status.State;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static ru.practicum.ewm.mapper.LocationMapper.*;
@@ -24,7 +25,7 @@ public class EventMapper {
         Event newEvent = new Event();
         newEvent.setAnnotation(newEventDto.getAnnotation());
         newEvent.setCategory(category);
-        newEvent.setConfirmedRequests(0);
+        //newEvent.setConfirmedRequests(0);
         newEvent.setCreatedOn(LocalDateTime.now());
         newEvent.setDescription(newEventDto.getDescription());
         newEvent.setEventDate(newEventDto.getEventDate());
@@ -86,7 +87,7 @@ public class EventMapper {
         updateEvent.setCategory(category != null
                 ? category
                 : oldEvent.getCategory());
-        updateEvent.setConfirmedRequests(oldEvent.getConfirmedRequests());
+        //updateEvent.setConfirmedRequests(oldEvent.getConfirmedRequests());
         updateEvent.setCreatedOn(oldEvent.getCreatedOn());
         updateEvent.setDescription(updateEventUserRequest.getDescription() != null
                 ? updateEventUserRequest.getDescription()
@@ -117,12 +118,12 @@ public class EventMapper {
         return updateEvent;
     }
 
-    public EventFullDto toEventFullDto(Event event) {
+    public EventFullDto toEventFullDto(Event event, Integer confirmedRequests) {
         EventFullDto eventFullDto = new EventFullDto();
         eventFullDto.setId(event.getId());
         eventFullDto.setAnnotation(event.getAnnotation());
         eventFullDto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
-        eventFullDto.setConfirmedRequests(event.getConfirmedRequests());
+        eventFullDto.setConfirmedRequests(confirmedRequests);
         eventFullDto.setCreatedOn(event.getCreatedOn());
         eventFullDto.setDescription(event.getDescription());
         eventFullDto.setEventDate(event.getEventDate());
@@ -138,12 +139,12 @@ public class EventMapper {
         return eventFullDto;
     }
 
-    public EventShortDto toEventShortDto(Event event) {
+    public EventShortDto toEventShortDto(Event event, Integer confirmedRequests) {
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setId(event.getId());
         eventShortDto.setAnnotation(event.getAnnotation());
         eventShortDto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
-        eventShortDto.setConfirmedRequests(event.getConfirmedRequests());
+        eventShortDto.setConfirmedRequests(confirmedRequests);
         eventShortDto.setEventDate(event.getEventDate());
         eventShortDto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
         eventShortDto.setPaid(event.getPaid());
@@ -152,20 +153,20 @@ public class EventMapper {
         return eventShortDto;
     }
 
-    public List<EventShortDto> mapToEventShortDto(Iterable<Event> events) {
+    public List<EventShortDto> mapToEventShortDto(Iterable<Event> events, HashMap<Long, Integer> eventsConfirmedRequest) {
         List<EventShortDto> result = new ArrayList<>();
 
         for (Event event : events) {
-            result.add(toEventShortDto(event));
+            result.add(toEventShortDto(event, eventsConfirmedRequest.get(event.getId())));
         }
         return result;
     }
 
-    public List<EventFullDto> mapToEventFullDto(Iterable<Event> events) {
+    public List<EventFullDto> mapToEventFullDto(Iterable<Event> events, HashMap<Long, Integer> eventsConfirmedRequest) {
         List<EventFullDto> result = new ArrayList<>();
 
         for (Event event : events) {
-            result.add(toEventFullDto(event));
+            result.add(toEventFullDto(event, eventsConfirmedRequest.get(event.getId())));
         }
         return result;
     }

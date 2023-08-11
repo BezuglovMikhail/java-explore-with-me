@@ -1,13 +1,14 @@
 package ru.practicum.ewm.mapper;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.dto.CompilationDto;
 import ru.practicum.ewm.dto.NewCompilationDto;
 import ru.practicum.ewm.model.Compilation;
+import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.request.UpdateCompilationRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -23,19 +24,19 @@ public class CompilationMapper {
     }
 
 
-    public CompilationDto toCompilationDto(Compilation compilation) {
+    public CompilationDto toCompilationDto(Compilation compilation, HashMap<Long, Integer> eventsConfirmedRequest) {
         CompilationDto compilationDto = new CompilationDto();
         compilationDto.setId(compilation.getId());
         compilationDto.setPinned(compilation.getPinned());
         compilationDto.setTitle(compilation.getTitle());
         if (compilation.getEvents() != null) {
-            compilationDto.setEvents(EventMapper.mapToEventShortDto(compilation.getEvents()));
+            compilationDto.setEvents(EventMapper.mapToEventShortDto(compilation.getEvents(), eventsConfirmedRequest));
         }
         return compilationDto;
     }
 
     public Compilation toCompilationUpdate(UpdateCompilationRequest updateCompilationRequest, long compId,
-                                                  Compilation old, Set<Event> events) {
+                                           Compilation old, Set<Event> events) {
         Compilation updateCompilation = new Compilation();
         updateCompilation.setId(compId);
         updateCompilation.setPinned(updateCompilationRequest.getPinned() != null
@@ -49,11 +50,13 @@ public class CompilationMapper {
         return updateCompilation;
     }
 
-    public List<CompilationDto> mapToCompilationDto(Iterable<Compilation> compilations) {
+    public List<CompilationDto> mapToCompilationDto(
+            Iterable<Compilation> compilations,
+            HashMap<Long, HashMap<Long, Integer>> confirmedRequestForCompilations) {
         List<CompilationDto> result = new ArrayList<>();
 
         for (Compilation compilation : compilations) {
-            result.add(toCompilationDto(compilation));
+            result.add(toCompilationDto(compilation, confirmedRequestForCompilations.get(compilation.getId())));
         }
         return result;
     }

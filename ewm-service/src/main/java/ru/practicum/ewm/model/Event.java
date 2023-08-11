@@ -1,6 +1,8 @@
 package ru.practicum.ewm.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.ewm.status.State;
 
 import javax.persistence.*;
@@ -25,8 +27,9 @@ public class Event {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    @Column(name = "confirmed_requests", columnDefinition = "BIGINT DEFAULT 0", nullable = false)
-    private Integer confirmedRequests;
+    //@Column(name = "confirmed_requests", columnDefinition = "BIGINT DEFAULT 0", nullable = false)
+    @Transient
+    private Integer confirmedRequests = 0;
 
     private LocalDateTime createdOn;
 
@@ -39,8 +42,6 @@ public class Event {
     @JoinColumn(name = "initiator_id", referencedColumnName = "id")
     private User initiator;
 
-    //@ManyToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "location_id", referencedColumnName = "id")
     @Embedded
     private Location location;
 

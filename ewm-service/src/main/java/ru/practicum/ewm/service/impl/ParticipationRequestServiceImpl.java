@@ -3,6 +3,7 @@ package ru.practicum.ewm.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.ConfirmedRequests;
 import ru.practicum.ewm.dto.ParticipationRequestDto;
 import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.exeption.NotFoundException;
@@ -32,12 +33,15 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     private final EventRepository eventRepository;
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private final ConfirmedRequests confirmedRequests;
 
     public ParticipationRequestServiceImpl(ParticipationRequestRepository partRequestRepository,
-                                           EventRepository eventRepository, UserRepository userRepository) {
+                                           EventRepository eventRepository, UserRepository userRepository, ConfirmedRequests confirmedRequests) {
         this.partRequestRepository = partRequestRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.confirmedRequests = confirmedRequests;
     }
 
     @Transactional
@@ -50,9 +54,10 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             Event event = eventRepository.findById(eventId)
                     .orElseThrow(() -> new NotFoundException("Event whit id = " + eventId + " not found in database."));
             ParticipationRequest checkRequest = partRequestRepository.findByRequester_IdAndEvent_Id(userId, eventId);
+            Integer checkConfirmedReq = confirmedRequests.findConfirmedRequests(List.of(event)).get(eventId);
             if (userId.equals(event.getInitiator().getId())
                     || !event.getState().equals(State.PUBLISHED)
-                    || (event.getParticipantLimit().equals(event.getConfirmedRequests())
+                    || (event.getParticipantLimit().equals(checkConfirmedReq)
                     && event.getParticipantLimit() != 0)
                     || !Objects.isNull(checkRequest)) {
 
@@ -113,9 +118,9 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                                                         Long userId, Long eventId) {
         Event checkEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event whit id = " + eventId + " not found in database."));
-
+        Integer checkConfirmedReq = confirmedRequests.findConfirmedRequests(List.of(checkEvent)).get(eventId);
         if (checkEvent.getParticipantLimit() <= 0
-                || checkEvent.getConfirmedRequests() >= checkEvent.getParticipantLimit()
+                || checkConfirmedReq >= checkEvent.getParticipantLimit()
                 || !checkEvent.getRequestModeration()) {
             throw new IncorrectParameterException("Incorrect parameter");
         }

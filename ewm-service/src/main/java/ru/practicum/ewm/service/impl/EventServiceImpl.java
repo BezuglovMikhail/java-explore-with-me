@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
+import ru.practicum.ewm.ConfirmedRequests;
 import ru.practicum.ewm.CustomPageRequest;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
@@ -41,6 +42,7 @@ import static ru.practicum.ewm.status.EventSort.VIEWS;
 @Service
 @Slf4j
 public class EventServiceImpl implements EventService {
+
     @Autowired
     private EventRepository eventRepository;
     @Autowired
@@ -49,17 +51,20 @@ public class EventServiceImpl implements EventService {
     private CategoryRepository categoryRepository;
     @Autowired
     private final StatClient statsClient;
+    @Autowired
+    private final ConfirmedRequests confirmedRequests;
 
     private final String format = ("yyyy-MM-dd HH:mm:ss");
 
     public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository,
                             CategoryRepository categoryRepository,
-                            StatClient statsClient) {
+                            StatClient statsClient, ConfirmedRequests confirmedRequests) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         //this.locationRepository = locationRepository;
         this.statsClient = statsClient;
+        this.confirmedRequests = confirmedRequests;
     }
 
     @Transactional
@@ -72,9 +77,9 @@ public class EventServiceImpl implements EventService {
 
         if (newEventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(2L))
                 || newEventDto.getEventDate().isAfter(LocalDateTime.now())) {
-
             try {
-                return toEventFullDto(eventRepository.save(toEvent(newEventDto, category, initiator)));
+                Integer confirmedRequests = 0;
+                return toEventFullDto(eventRepository.save(toEvent(newEventDto, category, initiator)), confirmedRequests);
             } catch (DataIntegrityViolationException | ConstraintViolationException e) {
                 throw new ValidationException("Validation exception");
             }
@@ -89,9 +94,9 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException("User whit id = " + userId + " not found in database."));
         Event eventByUserIdAndEventId = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event whit id = " + eventId + " not found in database."));
-
+        Integer confirmedReq = confirmedRequests.findConfirmedRequests(List.of(eventByUserIdAndEventId)).get(eventId);
         setViews(List.of(eventByUserIdAndEventId));
-        return toEventFullDto(eventByUserIdAndEventId);
+        return toEventFullDto(eventByUserIdAndEventId, confirmedReq);
     }
 
     @Override
@@ -100,8 +105,9 @@ public class EventServiceImpl implements EventService {
         if (Objects.isNull(findEvent)) {
             throw new NotFoundException("Event whit id = " + eventId + " not found in database.");
         }
+        Integer confirmedReq = confirmedRequests.findConfirmedRequests(List.of(findEvent)).get(eventId);
         setViews(List.of(findEvent));
-        return toEventFullDto(findEvent);
+        return toEventFullDto(findEvent, confirmedReq);
     }
 
     @Override
@@ -130,8 +136,9 @@ public class EventServiceImpl implements EventService {
                 throw new IncorrectParameterException("Incorrect parameter");
             }
         }
-
-        return toEventFullDto(eventRepository.save(toUpdateEvent(updateEventAdminRequest, oldEvent, category)));
+        Event updateEvent = eventRepository.save(toUpdateEvent(updateEventAdminRequest, oldEvent, category));
+        Integer confirmedReq = confirmedRequests.findConfirmedRequests(List.of(updateEvent)).get(eventId);
+        return toEventFullDto(updateEvent, confirmedReq);
     }
 
     @Override
@@ -156,7 +163,10 @@ public class EventServiceImpl implements EventService {
         } else {
             updateEventUserRequest.setStateAction(State.CANCELED);
         }
-        return toEventFullDto(eventRepository.save(toUpdateEvent(updateEventUserRequest, oldEvent, category)));
+
+        Event updateEvent = eventRepository.save(toUpdateEvent(updateEventUserRequest, oldEvent, category));
+        Integer confirmedReq = confirmedRequests.findConfirmedRequests(List.of(updateEvent)).get(eventId);
+        return toEventFullDto(updateEvent, confirmedReq);
     }
 
     @Transactional
@@ -173,7 +183,9 @@ public class EventServiceImpl implements EventService {
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sort);
         Page<Event> page = eventRepository.findAllByInitiator_Id(userId, pageable);
         setViews(page.getContent());
-        return mapToEventShortDto(page.getContent());
+        //setConfirmedRequests(page.getContent());
+
+        return mapToEventShortDto(page.getContent(), confirmedRequests.findConfirmedRequests(page.getContent()));
     }
 
     @Override
@@ -197,7 +209,7 @@ public class EventServiceImpl implements EventService {
 
         BooleanBuilder booleanBuilder = makeBooleanBuilder(filter);
         Page<Event> page = eventRepository.findAll(booleanBuilder, pageable);
-        return mapToEventFullDto(page);
+        return mapToEventFullDto(page, confirmedRequests.findConfirmedRequests(page.getContent()));
     }
 
     @Override
@@ -226,10 +238,11 @@ public class EventServiceImpl implements EventService {
         BooleanBuilder booleanBuilder = makeBooleanBuilder(filter);
         Page<Event> page = eventRepository.findAll(booleanBuilder, pageable);
         setViews(page.getContent());
-        List<EventShortDto> publicFindEvents = mapToEventShortDto(page);
+        List<EventShortDto> publicFindEvents = mapToEventShortDto(page,
+                confirmedRequests.findConfirmedRequests(page.getContent()));
 
         if (!Objects.isNull(sort) && sort.equals(VIEWS)) {
-           return publicFindEvents.stream().sorted(Comparator.comparing(EventShortDto::getViews))
+            return publicFindEvents.stream().sorted(Comparator.comparing(EventShortDto::getViews))
                     .collect(toList());
         }
         return publicFindEvents;
@@ -240,15 +253,19 @@ public class EventServiceImpl implements EventService {
                 Objects.isNull(obj) || (obj instanceof Collection && ((Collection<?>) obj).isEmpty());
         QEvent qEvent = QEvent.event;
         return new BooleanBuilder()
-                .and(!isNullOrEmpty.test(filter.getUsers()) ? qEvent.initiator.id.in(filter.getUsers()) : null)
-                .and(!isNullOrEmpty.test(filter.getStates()) ? qEvent.state.in(filter.getStates()) : null)
-                .and(!isNullOrEmpty.test(filter.getCategories()) ? qEvent.category.id.in(filter.getCategories()) : null)
-                .and(!isNullOrEmpty.test(filter.getRangeStart()) ? qEvent.eventDate.after(filter.getRangeStart()) : null)
-                .and(!isNullOrEmpty.test(filter.getPaid()) ? qEvent.paid.eq(filter.getPaid()) : null)
+                .and(!isNullOrEmpty.test(filter.getUsers())
+                        ? qEvent.initiator.id.in(filter.getUsers()) : null)
+                .and(!isNullOrEmpty.test(filter.getStates())
+                        ? qEvent.state.in(filter.getStates()) : null)
+                .and(!isNullOrEmpty.test(filter.getCategories())
+                        ? qEvent.category.id.in(filter.getCategories()) : null)
+                .and(!isNullOrEmpty.test(filter.getRangeStart())
+                        ? qEvent.eventDate.after(filter.getRangeStart()) : null)
+                .and(!isNullOrEmpty.test(filter.getPaid())
+                        ? qEvent.paid.eq(filter.getPaid()) : null)
                 .and(!isNullOrEmpty.test(filter.getText())
-                        ? (qEvent.annotation.likeIgnoreCase(filter.getText()).or(qEvent.description.likeIgnoreCase(filter.getText()))) : null)
-                .and(!isNullOrEmpty.test(filter.getOnlyAvailable())
-                        ? qEvent.participantLimit.eq(0).or(qEvent.confirmedRequests.lt(qEvent.participantLimit)) : null);
+                        ? (qEvent.annotation.likeIgnoreCase(filter.getText())
+                        .or(qEvent.description.likeIgnoreCase(filter.getText()))) : null);
     }
 
     private void checkStartEndSearch(LocalDateTime start, LocalDateTime end) {
