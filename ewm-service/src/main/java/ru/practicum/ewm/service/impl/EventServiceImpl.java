@@ -62,7 +62,6 @@ public class EventServiceImpl implements EventService {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
-        //this.locationRepository = locationRepository;
         this.statsClient = statsClient;
         this.confirmedRequests = confirmedRequests;
     }
@@ -129,6 +128,7 @@ public class EventServiceImpl implements EventService {
             if (updateEventAdminRequest.getStateAction().equals(State.PUBLISH_EVENT)
                     && oldEvent.getState().equals(State.PENDING)) {
                 updateEventAdminRequest.setStateAction(State.PUBLISHED);
+                oldEvent.setPublishedOn(LocalDateTime.now());
             } else if (updateEventAdminRequest.getStateAction().equals(State.REJECT_EVENT)
                     && oldEvent.getState().equals(State.PENDING)) {
                 updateEventAdminRequest.setStateAction(State.CANCELED);
@@ -182,8 +182,8 @@ public class EventServiceImpl implements EventService {
         Sort sort = Sort.by("id").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sort);
         Page<Event> page = eventRepository.findAllByInitiator_Id(userId, pageable);
+
         setViews(page.getContent());
-        //setConfirmedRequests(page.getContent());
 
         return mapToEventShortDto(page.getContent(), confirmedRequests.findConfirmedRequests(page.getContent()));
     }
@@ -237,6 +237,11 @@ public class EventServiceImpl implements EventService {
 
         BooleanBuilder booleanBuilder = makeBooleanBuilder(filter);
         Page<Event> page = eventRepository.findAll(booleanBuilder, pageable);
+        if (Objects.isNull(rangeStart) || Objects.isNull(rangeEnd)) {
+            setViews(page.getContent());
+        } else {
+            setViews(page.getContent(), rangeStart, rangeEnd);
+        }
         setViews(page.getContent());
         List<EventShortDto> publicFindEvents = mapToEventShortDto(page,
                 confirmedRequests.findConfirmedRequests(page.getContent()));
@@ -296,8 +301,17 @@ public class EventServiceImpl implements EventService {
     }
 
     private void setViews(List<Event> events) {
-        setViews(events, LocalDateTime.of(0, 1, 1, 0, 0, 0),
-                LocalDateTime.now());
+        LocalDateTime start = LocalDateTime.MIN;
+        if (!Objects.isNull(events)) {
+            for (Event event : events) {
+                if (!Objects.isNull(event.getPublishedOn()) && event.getPublishedOn().isAfter(start)) {
+                    start = event.getPublishedOn();
+                }
+            }
+        }
+        if (start != LocalDateTime.MIN) {
+            setViews(events, start, LocalDateTime.now());
+        }
     }
 
     private void setViews(List<Event> events, LocalDateTime start, LocalDateTime end) {
