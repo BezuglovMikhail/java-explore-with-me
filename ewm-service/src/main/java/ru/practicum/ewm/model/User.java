@@ -1,11 +1,12 @@
 package ru.practicum.ewm.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -21,11 +22,10 @@ public class User {
 
     @Email
     @Size(min = 6, max = 254)
-    @NotNull
+    @NotBlank
     private String email;
 
     @Size(min = 2, max = 250)
-    @NotNull
     @NotBlank
     private String name;
 

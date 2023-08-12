@@ -19,17 +19,8 @@ public class ViewStatMapper {
         );
     }
 
-    public static ViewStat toViewStart(ViewStatDto viewStatDto) {
-        return new ViewStat(
-                viewStatDto.getApp(),
-                viewStatDto.getUri(),
-                viewStatDto.getHits()
-        );
-    }
-
     public static List<ViewStatDto> mapToViewStatDto(Iterable<ViewStat> viewStats) {
         List<ViewStatDto> result = new ArrayList<>();
-
         for (ViewStat viewStat : viewStats) {
             result.add(toViewStartDto(viewStat));
         }
