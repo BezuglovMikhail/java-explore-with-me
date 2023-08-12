@@ -1,4 +1,4 @@
-package ru.practicum.ewm;
+package ru.practicum.ewm.until;
 
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;

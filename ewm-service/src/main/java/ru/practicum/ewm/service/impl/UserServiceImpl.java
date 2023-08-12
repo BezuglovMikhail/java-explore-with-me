@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.CustomPageRequest;
+import ru.practicum.ewm.until.CustomPageRequest;
 import ru.practicum.ewm.dto.UserDto;
 import ru.practicum.ewm.exeption.NotFoundException;
 import ru.practicum.ewm.model.User;

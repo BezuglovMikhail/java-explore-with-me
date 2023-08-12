@@ -1,16 +1,12 @@
-package ru.practicum.ewm.controller;
+package ru.practicum.ewm.controller.priv;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.EventFullDto;
-import ru.practicum.ewm.dto.EventShortDto;
-import ru.practicum.ewm.dto.NewEventDto;
 import ru.practicum.ewm.dto.ParticipationRequestDto;
 import ru.practicum.ewm.request.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.EventRequestStatusUpdateResult;
-import ru.practicum.ewm.request.UpdateEventUserRequest;
-import ru.practicum.ewm.service.EventService;
 import ru.practicum.ewm.service.ParticipationRequestService;
 
 import javax.validation.Valid;
@@ -19,50 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/users/{userId}")
 @Slf4j
-public class PrivateController {
+public class PrivateParticipationRequestController {
 
-    private EventService eventService;
-
+    @Autowired
     private ParticipationRequestService partRequestService;
-
-    public PrivateController(EventService eventService, ParticipationRequestService partRequestService) {
-        this.eventService = eventService;
-        this.partRequestService = partRequestService;
-    }
-
-    @PostMapping("/events")
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public EventFullDto saveEvent(@Valid @RequestBody NewEventDto newEventDto,
-                                  @PathVariable("userId") Long userId) {
-        EventFullDto addEvent = eventService.save(newEventDto, userId);
-        log.info("Request Post received to add event user`s whit id = {}", userId);
-        return addEvent;
-    }
-
-    @GetMapping("/events")
-    public List<EventShortDto> getEventsByUserId(@PathVariable("userId") Long userId,
-                                                 @RequestParam(defaultValue = "0") Integer from,
-                                                 @RequestParam(defaultValue = "10") Integer size) {
-        List<EventShortDto> eventsUser = eventService.getEventsByUserId(userId, from, size);
-        log.info("Request Get received to find all events user`s whit id = {}", userId);
-        return eventsUser;
-    }
-
-    @GetMapping("/events/{eventId}")
-    public EventFullDto getEventById(@PathVariable("userId") Long userId,
-                                     @PathVariable("eventId") Long eventId) {
-        EventFullDto eventDto = eventService.getEventByIdForUserId(userId, eventId);
-        log.info("Request Get received to add event user`s whit id = {}", userId);
-        return eventDto;
-    }
-
-    @PatchMapping("/events/{eventId}")
-    public EventFullDto updateEvent(@Valid @RequestBody UpdateEventUserRequest updateEventUserRequest,
-                                    @PathVariable("userId") Long userId, @PathVariable("eventId") Long eventId) {
-        EventFullDto updateEvent = eventService.updateEventPrivate(updateEventUserRequest, eventId);
-        log.info("Request Patch received to update event whit id = {} user`s whit id = {}", eventId, userId);
-        return updateEvent;
-    }
 
     @GetMapping("/events/{eventId}/requests")
     public List<ParticipationRequestDto> getAllRequestEventByUserId(@PathVariable("userId") Long userId,

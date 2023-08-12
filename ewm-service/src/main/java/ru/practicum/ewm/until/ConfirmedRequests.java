@@ -1,4 +1,4 @@
-package ru.practicum.ewm;
+package ru.practicum.ewm.until;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm.status.State.CONFIRMED;
+import static ru.practicum.ewm.until.status.State.CONFIRMED;
 
 @Component
 public class ConfirmedRequests {

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.ewm.status.State;
+import ru.practicum.ewm.until.status.State;
 
 import java.time.LocalDateTime;
 

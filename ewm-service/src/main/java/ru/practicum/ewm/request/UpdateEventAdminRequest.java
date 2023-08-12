@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.ewm.dto.LocationDto;
-import ru.practicum.ewm.status.State;
+import ru.practicum.ewm.until.status.State;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;

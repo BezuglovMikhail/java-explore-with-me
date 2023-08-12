@@ -2,7 +2,7 @@ package ru.practicum.ewm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.ewm.status.State;
+import ru.practicum.ewm.until.status.State;
 
 import java.time.LocalDateTime;
 

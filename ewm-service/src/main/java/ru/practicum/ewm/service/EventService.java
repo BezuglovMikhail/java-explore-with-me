@@ -5,8 +5,8 @@ import ru.practicum.ewm.dto.EventShortDto;
 import ru.practicum.ewm.dto.NewEventDto;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
-import ru.practicum.ewm.status.EventSort;
-import ru.practicum.ewm.status.State;
+import ru.practicum.ewm.until.status.EventSort;
+import ru.practicum.ewm.until.status.State;
 
 import java.time.LocalDateTime;
 import java.util.List;

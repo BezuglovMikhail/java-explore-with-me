@@ -3,7 +3,7 @@ package ru.practicum.ewm.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.ConfirmedRequests;
+import ru.practicum.ewm.until.ConfirmedRequests;
 import ru.practicum.ewm.dto.ParticipationRequestDto;
 import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.exeption.NotFoundException;
@@ -18,7 +18,7 @@ import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.request.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.service.ParticipationRequestService;
-import ru.practicum.ewm.status.State;
+import ru.practicum.ewm.until.status.State;
 
 import java.util.ArrayList;
 import java.util.List;

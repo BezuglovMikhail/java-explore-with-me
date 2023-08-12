@@ -9,7 +9,7 @@ import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
-import ru.practicum.ewm.status.State;
+import ru.practicum.ewm.until.status.State;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

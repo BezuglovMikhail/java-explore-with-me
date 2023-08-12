@@ -3,7 +3,7 @@ package ru.practicum.ewm.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.ewm.status.State;
+import ru.practicum.ewm.until.status.State;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -27,7 +27,6 @@ public class Event {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    //@Column(name = "confirmed_requests", columnDefinition = "BIGINT DEFAULT 0", nullable = false)
     @Transient
     private Integer confirmedRequests = 0;
 

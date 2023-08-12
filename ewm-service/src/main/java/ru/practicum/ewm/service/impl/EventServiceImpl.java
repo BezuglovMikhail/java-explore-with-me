@@ -10,8 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
-import ru.practicum.ewm.ConfirmedRequests;
-import ru.practicum.ewm.CustomPageRequest;
+import ru.practicum.ewm.until.ConfirmedRequests;
+import ru.practicum.ewm.until.CustomPageRequest;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
 import ru.practicum.ewm.dto.NewEventDto;
@@ -26,8 +26,9 @@ import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
 import ru.practicum.ewm.service.EventService;
-import ru.practicum.ewm.status.EventSort;
-import ru.practicum.ewm.status.State;
+import ru.practicum.ewm.until.SearchFilter;
+import ru.practicum.ewm.until.status.EventSort;
+import ru.practicum.ewm.until.status.State;
 import ru.practicum.stats.client.StatClient;
 import ru.practicum.stats.dto.ViewStatDto;
 
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static ru.practicum.ewm.mapper.EventMapper.*;
-import static ru.practicum.ewm.status.EventSort.VIEWS;
+import static ru.practicum.ewm.until.status.EventSort.VIEWS;
 
 @Service
 @Slf4j
