@@ -2,8 +2,9 @@ package ru.practicum.stats.service;
 
 import org.springframework.stereotype.Service;
 import ru.practicum.stats.dto.EndpointHitDto;
-
-import ru.practicum.stats.dtoStat.ViewStatDto;
+import ru.practicum.stats.dto.ViewStatDto;
+import ru.practicum.stats.dtoStat.EndpointHitMapper;
+import ru.practicum.stats.exeption.ValidationException;
 import ru.practicum.stats.model.ViewStat;
 import ru.practicum.stats.repository.EndpointHitRepository;
 
@@ -11,10 +12,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static ru.practicum.stats.dtoStat.EndpointHitMapper.toEndpointHit;
-import static ru.practicum.stats.dtoStat.EndpointHitMapper.toEndpointHitDto;
 import static ru.practicum.stats.dtoStat.ViewStatMapper.mapToViewStatDto;
 
 @Service
@@ -22,13 +22,13 @@ public class EndpointHitServiceImpl implements EndpointHitService {
 
     private final EndpointHitRepository repository;
 
-    public EndpointHitServiceImpl(EndpointHitRepository endpointHitRepository) {
-        this.repository = endpointHitRepository;
+    public EndpointHitServiceImpl(EndpointHitRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public EndpointHitDto save(EndpointHitDto endpointHitDto) {
-        return toEndpointHitDto(repository.save(toEndpointHit(endpointHitDto)));
+        return EndpointHitMapper.toEndpointHitDto(repository.save(EndpointHitMapper.toEndpointHit(endpointHitDto)));
     }
 
     @Override
@@ -37,6 +37,8 @@ public class EndpointHitServiceImpl implements EndpointHitService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime startFormatter = LocalDateTime.parse(start, formatter);
         LocalDateTime endFormatter = LocalDateTime.parse(end, formatter);
+
+        checkStartEndSearch(startFormatter, endFormatter);
 
         if (uris == null) {
             viewStatList = repository.findAll(startFormatter, endFormatter);
@@ -53,5 +55,14 @@ public class EndpointHitServiceImpl implements EndpointHitService {
                 .stream()
                 .sorted((o1, o2) -> (int) (o2.getHits() - o1.getHits()))
                 .collect(Collectors.toList());
+    }
+
+    private void checkStartEndSearch(LocalDateTime start, LocalDateTime end) {
+        if (Objects.isNull(start) || Objects.isNull(end)) {
+            return;
+        }
+        if (end.isBefore(start)) {
+            throw new ValidationException("Validation exception");
+        }
     }
 }
