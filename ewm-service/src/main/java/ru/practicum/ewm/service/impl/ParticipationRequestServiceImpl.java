@@ -3,7 +3,6 @@ package ru.practicum.ewm.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.until.ConfirmedRequests;
 import ru.practicum.ewm.dto.ParticipationRequestDto;
 import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.exeption.NotFoundException;
@@ -18,6 +17,7 @@ import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.request.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.service.ParticipationRequestService;
+import ru.practicum.ewm.until.ConfirmedRequests;
 import ru.practicum.ewm.until.status.State;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             Event event = eventRepository.findById(eventId)
                     .orElseThrow(() -> new NotFoundException("Event whit id = " + eventId + " not found in database."));
             ParticipationRequest checkRequest = partRequestRepository.findByRequester_IdAndEvent_Id(userId, eventId);
-            Integer checkConfirmedReq = confirmedRequests.findConfirmedRequests(List.of(event)).get(eventId);
+            Long checkConfirmedReq = confirmedRequests.findCountRequests(event.getId());
             if (userId.equals(event.getInitiator().getId())
                     || !event.getState().equals(State.PUBLISHED)
                     || (event.getParticipantLimit().equals(checkConfirmedReq)
@@ -65,10 +65,6 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             }
 
             request = partRequestRepository.save(ParticipationRequestMapper.toParticipationRequest(event, initiator));
-            if (!event.getRequestModeration()) {
-                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-                eventRepository.save(event);
-            }
         } else {
             throw new ValidationException("Validation exception");
         }
@@ -118,7 +114,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                                                         Long userId, Long eventId) {
         Event checkEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event whit id = " + eventId + " not found in database."));
-        Integer checkConfirmedReq = confirmedRequests.findConfirmedRequests(List.of(checkEvent)).get(eventId);
+        Long checkConfirmedReq = confirmedRequests.findCountRequests(checkEvent.getId());
         if (checkEvent.getParticipantLimit() <= 0
                 || checkConfirmedReq >= checkEvent.getParticipantLimit()
                 || !checkEvent.getRequestModeration()) {
@@ -135,7 +131,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             if (updateRequest.getStatus() == State.CONFIRMED
                     && checkEvent.getParticipantLimit() - checkEvent.getConfirmedRequests() > 0) {
                 request.setState(State.CONFIRMED);
-                checkEvent.setConfirmedRequests(checkEvent.getConfirmedRequests() + 1);
+                //checkEvent.setConfirmedRequests(checkEvent.getConfirmedRequests() + 1);
                 confirmed.add(ParticipationRequestMapper.toParticipationRequestDto(request));
             } else {
                 request.setState(State.REJECTED);

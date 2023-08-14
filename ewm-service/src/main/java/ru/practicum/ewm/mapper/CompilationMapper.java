@@ -7,10 +7,7 @@ import ru.practicum.ewm.model.Compilation;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.request.UpdateCompilationRequest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @UtilityClass
 public class CompilationMapper {
@@ -23,14 +20,13 @@ public class CompilationMapper {
         return newCompilation;
     }
 
-
-    public CompilationDto toCompilationDto(Compilation compilation, HashMap<Long, Integer> eventsConfirmedRequest) {
+    public CompilationDto toCompilationDto(Compilation compilation) {
         CompilationDto compilationDto = new CompilationDto();
         compilationDto.setId(compilation.getId());
         compilationDto.setPinned(compilation.getPinned());
         compilationDto.setTitle(compilation.getTitle());
         if (compilation.getEvents() != null) {
-            compilationDto.setEvents(EventMapper.mapToEventShortDto(compilation.getEvents(), eventsConfirmedRequest));
+            compilationDto.setEvents(EventMapper.mapToEventShortDto(compilation.getEvents()));
         }
         return compilationDto;
     }
@@ -50,13 +46,11 @@ public class CompilationMapper {
         return updateCompilation;
     }
 
-    public List<CompilationDto> mapToCompilationDto(
-            Iterable<Compilation> compilations,
-            HashMap<Long, HashMap<Long, Integer>> confirmedRequestForCompilations) {
+    public List<CompilationDto> mapToCompilationDto(Iterable<Compilation> compilations) {
         List<CompilationDto> result = new ArrayList<>();
 
         for (Compilation compilation : compilations) {
-            result.add(toCompilationDto(compilation, confirmedRequestForCompilations.get(compilation.getId())));
+            result.add(toCompilationDto(compilation));
         }
         return result;
     }

@@ -47,7 +47,7 @@ public class PublicEventController {
     public ResponseEntity<List<EventShortDto>> publicGetEventsWhitFilters(HttpServletRequest servletRequest,
                                                                           @RequestParam(required = false) String text,
                                                                           @RequestParam(required = false) Boolean paid,
-                                                                          @RequestParam(required = false) Boolean onlyAvailable,
+                                                                          @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                                                           @RequestParam(required = false) EventSort sort,
                                                                           @RequestParam(required = false) List<Long> users,
                                                                           @RequestParam(required = false) List<Long> categories,

@@ -10,22 +10,24 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
-import ru.practicum.ewm.until.ConfirmedRequests;
-import ru.practicum.ewm.until.CustomPageRequest;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
 import ru.practicum.ewm.dto.NewEventDto;
 import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.exeption.NotFoundException;
 import ru.practicum.ewm.exeption.ValidationException;
-import ru.practicum.ewm.model.*;
+import ru.practicum.ewm.model.Category;
+import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.QEvent;
+import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.repository.CategoryRepository;
 import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
 import ru.practicum.ewm.service.EventService;
+import ru.practicum.ewm.until.ConfirmedRequests;
+import ru.practicum.ewm.until.CustomPageRequest;
 import ru.practicum.ewm.until.SearchFilter;
 import ru.practicum.ewm.until.status.EventSort;
 import ru.practicum.ewm.until.status.State;
@@ -78,8 +80,8 @@ public class EventServiceImpl implements EventService {
         if (newEventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(2L))
                 || newEventDto.getEventDate().isAfter(LocalDateTime.now())) {
             try {
-                Integer confirmedRequests = 0;
-                return toEventFullDto(eventRepository.save(toEvent(newEventDto, category, initiator)), confirmedRequests);
+                //Long confirmedReq = confirmedRequests.findCountRequests(0L);
+                return toEventFullDto(eventRepository.save(toEvent(newEventDto, category, initiator)));
             } catch (DataIntegrityViolationException | ConstraintViolationException e) {
                 throw new ValidationException("Validation exception");
             }
@@ -94,7 +96,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException("User whit id = " + userId + " not found in database."));
         Event eventByUserIdAndEventId = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event whit id = " + eventId + " not found in database."));
-        Integer confirmedReq = confirmedRequests.findConfirmedRequests(List.of(eventByUserIdAndEventId)).get(eventId);
+        Long confirmedReq = confirmedRequests.findCountRequests(eventByUserIdAndEventId.getId());
         setViews(List.of(eventByUserIdAndEventId));
         return toEventFullDto(eventByUserIdAndEventId, confirmedReq);
     }
@@ -105,7 +107,7 @@ public class EventServiceImpl implements EventService {
         if (Objects.isNull(findEvent)) {
             throw new NotFoundException("Event whit id = " + eventId + " not found in database.");
         }
-        Integer confirmedReq = confirmedRequests.findConfirmedRequests(List.of(findEvent)).get(eventId);
+        Long confirmedReq = confirmedRequests.findCountRequests(findEvent.getId());
         setViews(List.of(findEvent));
         return toEventFullDto(findEvent, confirmedReq);
     }
@@ -138,8 +140,8 @@ public class EventServiceImpl implements EventService {
             }
         }
         Event updateEvent = eventRepository.save(toUpdateEvent(updateEventAdminRequest, oldEvent, category));
-        Integer confirmedReq = confirmedRequests.findConfirmedRequests(List.of(updateEvent)).get(eventId);
-        return toEventFullDto(updateEvent, confirmedReq);
+        //Long confirmedReq = confirmedRequests.findCountRequests(updateEvent.getId());
+        return toEventFullDto(updateEvent);
     }
 
     @Override
@@ -166,8 +168,8 @@ public class EventServiceImpl implements EventService {
         }
 
         Event updateEvent = eventRepository.save(toUpdateEvent(updateEventUserRequest, oldEvent, category));
-        Integer confirmedReq = confirmedRequests.findConfirmedRequests(List.of(updateEvent)).get(eventId);
-        return toEventFullDto(updateEvent, confirmedReq);
+        //Long confirmedReq = confirmedRequests.findCountRequests(updateEvent.getId());
+        return toEventFullDto(updateEvent);
     }
 
     @Transactional
@@ -210,7 +212,11 @@ public class EventServiceImpl implements EventService {
 
         BooleanBuilder booleanBuilder = makeBooleanBuilder(filter);
         Page<Event> page = eventRepository.findAll(booleanBuilder, pageable);
-        return mapToEventFullDto(page, confirmedRequests.findConfirmedRequests(page.getContent()));
+        Map<Long, Long> countRequest = confirmedRequests.findConfirmedRequests(page.getContent());
+
+        List<EventFullDto> findEvents = mapToEventFullDto(page.getContent(), countRequest);
+
+        return findEvents;
     }
 
     @Override
@@ -332,7 +338,6 @@ public class EventServiceImpl implements EventService {
             }
         } catch (RestClientException e) {
             log.error(e.getMessage());
-            e.printStackTrace();
             return;
         }
         List<ViewStatDto> finalDtoList = dtoList;

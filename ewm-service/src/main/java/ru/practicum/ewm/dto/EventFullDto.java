@@ -17,7 +17,7 @@ public class EventFullDto {
 
     private CategoryDto category;
 
-    private int confirmedRequests;
+    private Long confirmedRequests;
 
     private LocalDateTime createdOn;
 
@@ -32,7 +32,7 @@ public class EventFullDto {
 
     private Boolean paid;
 
-    private int participantLimit;
+    private Long participantLimit;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;

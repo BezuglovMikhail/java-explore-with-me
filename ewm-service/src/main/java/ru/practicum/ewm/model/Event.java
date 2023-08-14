@@ -28,7 +28,7 @@ public class Event {
     private Category category;
 
     @Transient
-    private Integer confirmedRequests = 0;
+    private Long confirmedRequests = 0L;
 
     private LocalDateTime createdOn;
 
@@ -46,7 +46,7 @@ public class Event {
 
     private Boolean paid;
 
-    private Integer participantLimit;
+    private Long participantLimit;
 
     private LocalDateTime publishedOn;
 

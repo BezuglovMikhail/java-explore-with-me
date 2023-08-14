@@ -5,8 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.until.ConfirmedRequests;
-import ru.practicum.ewm.until.CustomPageRequest;
 import ru.practicum.ewm.dto.CompilationDto;
 import ru.practicum.ewm.dto.NewCompilationDto;
 import ru.practicum.ewm.exeption.NotFoundException;
@@ -17,8 +15,9 @@ import ru.practicum.ewm.repository.CompilationRepository;
 import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.request.UpdateCompilationRequest;
 import ru.practicum.ewm.service.CompilationService;
+import ru.practicum.ewm.until.ConfirmedRequests;
+import ru.practicum.ewm.until.CustomPageRequest;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,15 +44,13 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto save(NewCompilationDto newCompilationDto) {
         Set<Event> events = new HashSet<>();
-        HashMap<Long, Integer> confirmedReqMap = new HashMap<>();
         if (newCompilationDto.getEvents() != null) {
             events = eventRepository.findByIdIn(newCompilationDto.getEvents());
-            confirmedReqMap = confirmedRequests.findConfirmedRequests(events);
         }
 
         Compilation newCompilation = compilationRepository.save(CompilationMapper.toCompilation(newCompilationDto,
                 events));
-        return CompilationMapper.toCompilationDto(newCompilation, confirmedReqMap);
+        return CompilationMapper.toCompilationDto(newCompilation);
     }
 
     @Transactional
@@ -70,40 +67,36 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation old = compilationRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("Compilation whit id = " + compId + " not found in database."));
         Set<Event> events = new HashSet<>();
-        HashMap<Long, Integer> confirmedReqMap = new HashMap<>();
         if (updateCompilationRequest.getEvents() != null) {
             events = eventRepository.findByIdIn(updateCompilationRequest.getEvents());
-            confirmedReqMap = confirmedRequests.findConfirmedRequests(events);
             return CompilationMapper.toCompilationDto(compilationRepository
-                            .save(CompilationMapper.toCompilationUpdate(updateCompilationRequest, compId, old, events)),
-                    confirmedReqMap);
+                    .save(CompilationMapper.toCompilationUpdate(updateCompilationRequest, compId, old, events)));
         }
 
-        confirmedReqMap = confirmedRequests.findConfirmedRequests(old.getEvents());
         return CompilationMapper.toCompilationDto(compilationRepository
-                        .save(CompilationMapper.toCompilationUpdate(updateCompilationRequest, compId, old, events)),
-                confirmedReqMap);
+                .save(CompilationMapper.toCompilationUpdate(updateCompilationRequest, compId, old, events)));
     }
 
     @Override
     public CompilationDto getCompilationById(Long compId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("Compilation whit id = " + compId + " not found in database."));
-        return CompilationMapper.toCompilationDto(compilation,
-                confirmedRequests.findConfirmedRequests(compilation.getEvents()));
+        return CompilationMapper.toCompilationDto(compilation);
     }
 
     @Override
-    public List<CompilationDto> findCompilationsPinned(boolean pinned, Integer from, Integer size) {
+    public List<CompilationDto> findCompilationsPinned(Boolean pinned, Integer from, Integer size) {
         Sort sort = Sort.by("id").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sort);
-        Page<Compilation> page = compilationRepository.findAllByPinned(pinned, pageable);
-        HashMap<Long, HashMap<Long, Integer>> confirmedRequestForCompilations = new HashMap<>();
 
-        for (Compilation compilation : page.getContent()) {
-            confirmedRequestForCompilations.put(compilation.getId(),
-                    confirmedRequests.findConfirmedRequests(compilation.getEvents()));
+        Page<Compilation> page;
+
+        if (pinned != null) {
+            page = compilationRepository.findAllByPinned(pinned, pageable);
+        } else {
+            page = compilationRepository.findAll(pageable);
         }
-        return CompilationMapper.mapToCompilationDto(page.getContent(), confirmedRequestForCompilations);
+
+        return CompilationMapper.mapToCompilationDto(page.getContent());
     }
 }
