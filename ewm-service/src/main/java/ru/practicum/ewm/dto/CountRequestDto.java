@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CountRequestDto {
 
-    Long eventId;
+    private Long eventId;
 
-    Long count;
+    private Long count;
 }

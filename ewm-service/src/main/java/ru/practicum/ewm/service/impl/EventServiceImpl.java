@@ -80,7 +80,6 @@ public class EventServiceImpl implements EventService {
         if (newEventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(2L))
                 || newEventDto.getEventDate().isAfter(LocalDateTime.now())) {
             try {
-                //Long confirmedReq = confirmedRequests.findCountRequests(0L);
                 return toEventFullDto(eventRepository.save(toEvent(newEventDto, category, initiator)));
             } catch (DataIntegrityViolationException | ConstraintViolationException e) {
                 throw new ValidationException("Validation exception");
@@ -140,7 +139,6 @@ public class EventServiceImpl implements EventService {
             }
         }
         Event updateEvent = eventRepository.save(toUpdateEvent(updateEventAdminRequest, oldEvent, category));
-        //Long confirmedReq = confirmedRequests.findCountRequests(updateEvent.getId());
         return toEventFullDto(updateEvent);
     }
 
@@ -168,7 +166,6 @@ public class EventServiceImpl implements EventService {
         }
 
         Event updateEvent = eventRepository.save(toUpdateEvent(updateEventUserRequest, oldEvent, category));
-        //Long confirmedReq = confirmedRequests.findCountRequests(updateEvent.getId());
         return toEventFullDto(updateEvent);
     }
 

@@ -131,7 +131,6 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             if (updateRequest.getStatus() == State.CONFIRMED
                     && checkEvent.getParticipantLimit() - checkEvent.getConfirmedRequests() > 0) {
                 request.setState(State.CONFIRMED);
-                //checkEvent.setConfirmedRequests(checkEvent.getConfirmedRequests() + 1);
                 confirmed.add(ParticipationRequestMapper.toParticipationRequestDto(request));
             } else {
                 request.setState(State.REJECTED);

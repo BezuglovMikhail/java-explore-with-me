@@ -78,7 +78,6 @@ public class PublicEventController {
             statClient.createStatistics(servletRequest);
         } catch (RestClientException e) {
             log.error("Can't connect to the statistics server: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 }
