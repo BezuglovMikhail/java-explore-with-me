@@ -2,7 +2,7 @@ package ru.practicum.ewm.until;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StateEvent;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +14,7 @@ public class SearchFilter {
 
     private List<Long> users;
 
-    private List<State> states;
+    private List<StateEvent> states;
 
     private List<Long> categories;
 

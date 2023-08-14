@@ -1,6 +1,5 @@
 package ru.practicum.ewm.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.dto.ParticipationRequestDto;
@@ -18,7 +17,8 @@ import ru.practicum.ewm.request.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.service.ParticipationRequestService;
 import ru.practicum.ewm.until.ConfirmedRequests;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StateEvent;
+import ru.practicum.ewm.until.status.StatusRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +27,12 @@ import java.util.Objects;
 @Service
 public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
-    @Autowired
     private final ParticipationRequestRepository partRequestRepository;
-    @Autowired
+
     private final EventRepository eventRepository;
-    @Autowired
+
     private final UserRepository userRepository;
-    @Autowired
+
     private final ConfirmedRequests confirmedRequests;
 
     public ParticipationRequestServiceImpl(ParticipationRequestRepository partRequestRepository,
@@ -56,7 +55,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             ParticipationRequest checkRequest = partRequestRepository.findByRequester_IdAndEvent_Id(userId, eventId);
             Long checkConfirmedReq = confirmedRequests.findCountRequests(event.getId());
             if (userId.equals(event.getInitiator().getId())
-                    || !event.getState().equals(State.PUBLISHED)
+                    || !event.getState().equals(StateEvent.PUBLISHED)
                     || (event.getParticipantLimit().equals(checkConfirmedReq)
                     && event.getParticipantLimit() != 0)
                     || !Objects.isNull(checkRequest)) {
@@ -85,18 +84,9 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                         " not found in database."));
 
         if (userId.equals(oldRequest.getRequester().getId())
-                && !oldRequest.getState().equals(State.PUBLISHED)) {
-            oldRequest.setState(State.CANCELED);
+                && !oldRequest.getState().equals(StatusRequest.CONFIRMED)) {
+            oldRequest.setState(StatusRequest.CANCELED);
             return ParticipationRequestMapper.toParticipationRequestDto(partRequestRepository.save(oldRequest));
-        } else {
-            throw new IncorrectParameterException("Incorrect parameter");
-        }
-    }
-
-    private void checkRequestForCancel(Long userId, Long requesterId, State oldRequestState) {
-        if (userId.equals(requesterId)
-                && !oldRequestState.equals(State.PUBLISHED)) {
-            return;
         } else {
             throw new IncorrectParameterException("Incorrect parameter");
         }
@@ -125,15 +115,15 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         List<ParticipationRequest> requestList = partRequestRepository.findByIdIn(updateRequest.getRequestIds());
 
         for (ParticipationRequest request : requestList) {
-            if (!request.getState().equals(State.PENDING)) {
+            if (!request.getState().equals(StatusRequest.PENDING)) {
                 throw new IncorrectParameterException("Incorrect parameter");
             }
-            if (updateRequest.getStatus() == State.CONFIRMED
+            if (updateRequest.getStatus() == StatusRequest.CONFIRMED
                     && checkEvent.getParticipantLimit() - checkEvent.getConfirmedRequests() > 0) {
-                request.setState(State.CONFIRMED);
+                request.setState(StatusRequest.CONFIRMED);
                 confirmed.add(ParticipationRequestMapper.toParticipationRequestDto(request));
             } else {
-                request.setState(State.REJECTED);
+                request.setState(StatusRequest.REJECTED);
                 rejected.add(ParticipationRequestMapper.toParticipationRequestDto(request));
             }
         }

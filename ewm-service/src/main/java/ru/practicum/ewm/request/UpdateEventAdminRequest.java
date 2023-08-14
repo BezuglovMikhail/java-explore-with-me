@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.ewm.dto.LocationDto;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StateAction;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
@@ -34,7 +34,7 @@ public class UpdateEventAdminRequest {
 
     private Boolean requestModeration;
 
-    private State stateAction;
+    private StateAction stateAction;
 
     @Size(min = 3, max = 120)
     private String title;

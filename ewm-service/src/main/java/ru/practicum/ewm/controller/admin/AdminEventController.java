@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.service.EventService;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StateEvent;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -41,7 +41,7 @@ public class AdminEventController {
 
     @GetMapping
     public List<EventFullDto> getEventsWhitFilters(@RequestParam(required = false) List<Long> users,
-                                                   @RequestParam(required = false) List<State> states,
+                                                   @RequestParam(required = false) List<StateEvent> states,
                                                    @RequestParam(required = false) List<Long> categories,
                                                    @RequestParam(required = false)
                                                    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

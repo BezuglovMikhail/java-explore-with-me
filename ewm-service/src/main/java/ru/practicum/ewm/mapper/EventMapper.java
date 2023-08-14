@@ -9,7 +9,7 @@ import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StateEvent;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class EventMapper {
         newEvent.setPaid(newEventDto.isPaid());
         newEvent.setParticipantLimit(newEventDto.getParticipantLimit());
         newEvent.setRequestModeration(newEventDto.isRequestModeration());
-        newEvent.setState(State.PENDING);
+        newEvent.setState(StateEvent.PENDING);
         newEvent.setTitle(newEventDto.getTitle());
         return newEvent;
     }
@@ -65,8 +65,9 @@ public class EventMapper {
         updateEvent.setRequestModeration(updateEventAdminRequest.getRequestModeration() != null
                 ? updateEventAdminRequest.getRequestModeration()
                 : oldEvent.getRequestModeration());
-        updateEvent.setState(updateEventAdminRequest.getStateAction() != null
-                ? updateEventAdminRequest.getStateAction() : oldEvent.getState());
+        updateEvent.setState(oldEvent.getState());
+                //updateEventAdminRequest.getStateAction() != null
+                //? updateEventAdminRequest.getStateAction() : oldEvent.getState());
         updateEvent.setTitle(updateEventAdminRequest.getTitle() != null
                 ? updateEventAdminRequest.getTitle()
                 : oldEvent.getTitle());
@@ -102,9 +103,9 @@ public class EventMapper {
         updateEvent.setRequestModeration(updateEventUserRequest.getRequestModeration() != null
                 ? updateEventUserRequest.getRequestModeration()
                 : oldEvent.getRequestModeration());
-        updateEvent.setState(updateEventUserRequest.getStateAction().equals(State.PENDING)
-                ? State.PENDING
-                : updateEventUserRequest.getStateAction());
+        updateEvent.setState(oldEvent.getState());
+                //? State.PENDING
+               // : updateEventUserRequest.getStateAction());
         updateEvent.setTitle(updateEventUserRequest.getTitle() != null
                 ? updateEventUserRequest.getTitle()
                 : oldEvent.getTitle());

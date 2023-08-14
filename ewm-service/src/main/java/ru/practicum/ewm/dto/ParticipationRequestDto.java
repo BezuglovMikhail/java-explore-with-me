@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StatusRequest;
 
 import java.time.LocalDateTime;
 
@@ -21,5 +21,5 @@ public class ParticipationRequestDto {
 
     private Long requester;
 
-    private State status;
+    private StatusRequest status;
 }

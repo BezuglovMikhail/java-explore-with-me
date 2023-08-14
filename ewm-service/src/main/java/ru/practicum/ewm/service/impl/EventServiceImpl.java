@@ -29,8 +29,7 @@ import ru.practicum.ewm.service.EventService;
 import ru.practicum.ewm.until.ConfirmedRequests;
 import ru.practicum.ewm.until.CustomPageRequest;
 import ru.practicum.ewm.until.SearchFilter;
-import ru.practicum.ewm.until.status.EventSort;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.*;
 import ru.practicum.stats.client.StatClient;
 import ru.practicum.stats.dto.ViewStatDto;
 
@@ -102,7 +101,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventById(Long eventId) {
-        Event findEvent = eventRepository.findByIdAndState(eventId, State.PUBLISHED);
+        Event findEvent = eventRepository.findByIdAndState(eventId, StateEvent.PUBLISHED);
         if (Objects.isNull(findEvent)) {
             throw new NotFoundException("Event whit id = " + eventId + " not found in database.");
         }
@@ -127,13 +126,13 @@ public class EventServiceImpl implements EventService {
             category = oldEvent.getCategory();
         }
         if (updateEventAdminRequest.getStateAction() != null) {
-            if (updateEventAdminRequest.getStateAction().equals(State.PUBLISH_EVENT)
-                    && oldEvent.getState().equals(State.PENDING)) {
-                updateEventAdminRequest.setStateAction(State.PUBLISHED);
+            if (updateEventAdminRequest.getStateAction().equals(StateAction.PUBLISH_EVENT)
+                    && oldEvent.getState().equals(StateEvent.PENDING)) {
+                oldEvent.setState(StateEvent.PUBLISHED);
                 oldEvent.setPublishedOn(LocalDateTime.now());
-            } else if (updateEventAdminRequest.getStateAction().equals(State.REJECT_EVENT)
-                    && oldEvent.getState().equals(State.PENDING)) {
-                updateEventAdminRequest.setStateAction(State.CANCELED);
+            } else if (updateEventAdminRequest.getStateAction().equals(StateAction.REJECT_EVENT)
+                    && oldEvent.getState().equals(StateEvent.PENDING)) {
+                oldEvent.setState(StateEvent.CANCELED);
             } else {
                 throw new IncorrectParameterException("Incorrect parameter");
             }
@@ -159,10 +158,10 @@ public class EventServiceImpl implements EventService {
             category = oldEvent.getCategory();
         }
         if (updateEventUserRequest.getStateAction() != null
-                && !updateEventUserRequest.getStateAction().equals(State.CANCEL_REVIEW)) {
-            updateEventUserRequest.setStateAction(State.PENDING);
+                && !updateEventUserRequest.getStateAction().equals(StateActionReview.CANCEL_REVIEW)) {
+            oldEvent.setState(StateEvent.PENDING);
         } else {
-            updateEventUserRequest.setStateAction(State.CANCELED);
+            oldEvent.setState(StateEvent.CANCELED);
         }
 
         Event updateEvent = eventRepository.save(toUpdateEvent(updateEventUserRequest, oldEvent, category));
@@ -189,7 +188,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventFullDto> adminFindEventsWhitFilter(List<Long> users, List<State> states, List<Long> categories,
+    public List<EventFullDto> adminFindEventsWhitFilter(List<Long> users, List<StateEvent> states, List<Long> categories,
                                                         LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                         Integer from, Integer size) {
         Sort sort = Sort.by("id").ascending();
@@ -230,7 +229,7 @@ public class EventServiceImpl implements EventService {
 
         SearchFilter filter = new SearchFilter(
                 users,
-                List.of(State.PUBLISHED),
+                List.of(StateEvent.PUBLISHED),
                 categories,
                 rangeStart,
                 rangeEnd,
@@ -298,8 +297,8 @@ public class EventServiceImpl implements EventService {
         }
     }
 
-    private void checkStateForUpdatePrivate(State state) throws IncorrectParameterException {
-        if (state.equals(State.PUBLISHED)) {
+    private void checkStateForUpdatePrivate(StateEvent state) throws IncorrectParameterException {
+        if (state.equals(StateEvent.PUBLISHED)) {
             throw new IncorrectParameterException("Incorrect parameter");
         }
     }
