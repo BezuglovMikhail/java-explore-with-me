@@ -36,9 +36,6 @@ public class ParticipationRequestMapper {
                         || event.getParticipantLimit() == 0
                         ? StatusRequest.CONFIRMED
                         : StatusRequest.PENDING);
-        //? StateEvent.CONFIRMED
-        //: StateEvent.PENDING);
-
         return participationRequest;
     }
 

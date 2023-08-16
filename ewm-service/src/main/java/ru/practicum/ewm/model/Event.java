@@ -52,6 +52,7 @@ public class Event {
 
     private Boolean requestModeration;
 
+    @Enumerated(EnumType.STRING)
     private StateEvent state;
 
     @Size(min = 3, max = 120)

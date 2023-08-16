@@ -37,7 +37,6 @@ public class UserMapper {
         User newUser = new User();
         newUser.setName(newUserRequest.getName());
         newUser.setEmail(newUserRequest.getEmail());
-
         return newUser;
     }
 
@@ -47,7 +46,6 @@ public class UserMapper {
         for (User user : users) {
             result.add(toUserDto(user));
         }
-
         return result;
     }
 }

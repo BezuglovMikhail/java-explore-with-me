@@ -3,7 +3,7 @@ package ru.practicum.ewm.mapper;
 import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
-import ru.practicum.ewm.dto.NewEventDto;
+import ru.practicum.ewm.dto.newdto.NewEventDto;
 import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.User;
@@ -66,8 +66,6 @@ public class EventMapper {
                 ? updateEventAdminRequest.getRequestModeration()
                 : oldEvent.getRequestModeration());
         updateEvent.setState(oldEvent.getState());
-                //updateEventAdminRequest.getStateAction() != null
-                //? updateEventAdminRequest.getStateAction() : oldEvent.getState());
         updateEvent.setTitle(updateEventAdminRequest.getTitle() != null
                 ? updateEventAdminRequest.getTitle()
                 : oldEvent.getTitle());
@@ -104,8 +102,6 @@ public class EventMapper {
                 ? updateEventUserRequest.getRequestModeration()
                 : oldEvent.getRequestModeration());
         updateEvent.setState(oldEvent.getState());
-                //? State.PENDING
-               // : updateEventUserRequest.getStateAction());
         updateEvent.setTitle(updateEventUserRequest.getTitle() != null
                 ? updateEventUserRequest.getTitle()
                 : oldEvent.getTitle());

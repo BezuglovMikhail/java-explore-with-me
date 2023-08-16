@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
-import ru.practicum.ewm.dto.NewEventDto;
+import ru.practicum.ewm.dto.newdto.NewEventDto;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
 import ru.practicum.ewm.service.EventService;
 

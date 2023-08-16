@@ -23,5 +23,5 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
             "FROM ParticipationRequest as pr " +
             "WHERE event.id IN (?1) AND pr.state = ?2 " +
             "GROUP BY event.id")
-    List<CountRequestDto> countByEventInAndState(List<Long> eventIds, StatusRequest confirmed);
+    List<CountRequestDto> countByEventsInAndState(List<Long> eventIds, StatusRequest confirmed);
 }

@@ -2,7 +2,7 @@ package ru.practicum.ewm.service;
 
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
-import ru.practicum.ewm.dto.NewEventDto;
+import ru.practicum.ewm.dto.newdto.NewEventDto;
 import ru.practicum.ewm.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.request.UpdateEventUserRequest;
 import ru.practicum.ewm.until.status.EventSort;

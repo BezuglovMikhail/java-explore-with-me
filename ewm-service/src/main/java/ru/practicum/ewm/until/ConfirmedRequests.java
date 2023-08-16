@@ -21,9 +21,17 @@ public class ConfirmedRequests {
     public Map<Long, Long> findConfirmedRequests(Collection<Event> events) {
 
         List<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toList());
+        List<CountRequestDto> countRequests = participationRequestRepository
+                .countByEventsInAndState(eventIds, StatusRequest.CONFIRMED);
 
-        List<CountRequestDto> countRequests = participationRequestRepository.countByEventInAndState(eventIds, StatusRequest.CONFIRMED);
+        return countRequests.stream().collect(Collectors
+                .toMap(CountRequestDto::getEventId, CountRequestDto::getCount));
+    }
 
+    public Map<Long, Long> findConfirmedRequestsByEventIds(List<Long> events) {
+
+        List<CountRequestDto> countRequests = participationRequestRepository
+                .countByEventsInAndState(events, StatusRequest.CONFIRMED);
 
         return countRequests.stream().collect(Collectors
                 .toMap(CountRequestDto::getEventId, CountRequestDto::getCount));

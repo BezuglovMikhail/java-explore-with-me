@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.until.CustomPageRequest;
 import ru.practicum.ewm.dto.CategoryDto;
-import ru.practicum.ewm.dto.NewCategoryDto;
+import ru.practicum.ewm.dto.newdto.NewCategoryDto;
 import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.exeption.NotFoundException;
 import ru.practicum.ewm.exeption.ValidationException;

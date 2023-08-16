@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
-import ru.practicum.ewm.dto.NewEventDto;
+import ru.practicum.ewm.dto.newdto.NewEventDto;
 import ru.practicum.ewm.exeption.IncorrectParameterException;
 import ru.practicum.ewm.exeption.NotFoundException;
 import ru.practicum.ewm.exeption.ValidationException;
@@ -29,7 +29,10 @@ import ru.practicum.ewm.service.EventService;
 import ru.practicum.ewm.until.ConfirmedRequests;
 import ru.practicum.ewm.until.CustomPageRequest;
 import ru.practicum.ewm.until.SearchFilter;
-import ru.practicum.ewm.until.status.*;
+import ru.practicum.ewm.until.status.EventSort;
+import ru.practicum.ewm.until.status.StateAction;
+import ru.practicum.ewm.until.status.StateActionReview;
+import ru.practicum.ewm.until.status.StateEvent;
 import ru.practicum.stats.client.StatClient;
 import ru.practicum.stats.dto.ViewStatDto;
 
@@ -106,6 +109,9 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("Event whit id = " + eventId + " not found in database.");
         }
         Long confirmedReq = confirmedRequests.findCountRequests(findEvent.getId());
+        if (confirmedReq == null) {
+            confirmedReq = 0L;
+        }
         setViews(List.of(findEvent));
         return toEventFullDto(findEvent, confirmedReq);
     }

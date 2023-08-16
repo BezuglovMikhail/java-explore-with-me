@@ -21,8 +21,10 @@ public class ViewStatMapper {
 
     public static List<ViewStatDto> mapToViewStatDto(Iterable<ViewStat> viewStats) {
         List<ViewStatDto> result = new ArrayList<>();
-        for (ViewStat viewStat : viewStats) {
-            result.add(toViewStartDto(viewStat));
+        if (viewStats != null) {
+            for (ViewStat viewStat : viewStats) {
+                result.add(toViewStartDto(viewStat));
+            }
         }
         return result;
     }
