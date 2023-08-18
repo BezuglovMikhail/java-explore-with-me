@@ -11,8 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RatingDto {
 
-    private Long id;
-
     private Long likes;
 
     private Long dislikes;

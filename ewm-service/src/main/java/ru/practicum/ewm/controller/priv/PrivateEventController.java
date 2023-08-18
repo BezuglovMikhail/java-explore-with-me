@@ -11,6 +11,8 @@ import ru.practicum.ewm.request.UpdateEventUserRequest;
 import ru.practicum.ewm.service.EventService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -33,8 +35,8 @@ public class PrivateEventController {
 
     @GetMapping
     public List<EventShortDto> getEventsByUserId(@PathVariable("userId") Long userId,
-                                                 @RequestParam(defaultValue = "0") Integer from,
-                                                 @RequestParam(defaultValue = "10") Integer size) {
+                                                 @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                 @Positive @RequestParam(defaultValue = "10") Integer size) {
         List<EventShortDto> eventsUser = eventService.getEventsByUserId(userId, from, size);
         log.info("Request Get received to find all events user`s whit id = {}", userId);
         return eventsUser;

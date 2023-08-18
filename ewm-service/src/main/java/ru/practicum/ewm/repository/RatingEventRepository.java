@@ -11,7 +11,7 @@ import ru.practicum.ewm.until.status.StateAssessment;
 
 public interface RatingEventRepository extends JpaRepository<RatingEvent, Long> {
 
-    @Query("SELECT new ru.practicum.ewm.dto.RatingDto(event.id, " +
+    @Query("SELECT new ru.practicum.ewm.dto.RatingDto(" +
             "SUM(CASE re.state WHEN 'LIKE' THEN 1 ELSE 0 END) as likes, " +
             "SUM(CASE re.state WHEN 'DISLIKE' THEN 1 ELSE 0 END) as dislikes) " +
             "FROM RatingEvent as re " +
@@ -19,7 +19,7 @@ public interface RatingEventRepository extends JpaRepository<RatingEvent, Long> 
             "GROUP BY event.id")
     RatingDto findRating(Long eventId);
 
-    @Query("SELECT new ru.practicum.ewm.dto.RatingDto(event.initiator.id, " +
+    @Query("SELECT new ru.practicum.ewm.dto.RatingDto(" +
             "SUM(CASE re.state WHEN 'LIKE' THEN 1 ELSE 0 END) as likes, " +
             "SUM(CASE re.state WHEN 'DISLIKE' THEN 1 ELSE 0 END) as dislikes) " +
             "FROM RatingEvent as re " +
@@ -30,7 +30,7 @@ public interface RatingEventRepository extends JpaRepository<RatingEvent, Long> 
     Long countByEventIdAndState(Long eventId, StateAssessment like);
 
 
-    @Query("SELECT new ru.practicum.ewm.dto.RatingEventShortDto(re.event, " +
+    @Query("SELECT new ru.practicum.ewm.dto.RatingEventShortDto(re.event," +
             "SUM(CASE re.state WHEN 'LIKE' THEN 1 ELSE 0 END) as likes, " +
             "SUM(CASE re.state WHEN 'DISLIKE' THEN 1 ELSE 0 END) as dislikes) " +
             "FROM RatingEvent as re " +
@@ -39,7 +39,7 @@ public interface RatingEventRepository extends JpaRepository<RatingEvent, Long> 
             "ORDER BY likes DESC")
     Page<RatingEventShortDto> findAllByLikes(Pageable pageable);
 
-    @Query("SELECT new ru.practicum.ewm.dto.RatingEventShortDto(re.event, " +
+    @Query("SELECT new ru.practicum.ewm.dto.RatingEventShortDto(re.event," +
             "SUM(CASE re.state WHEN 'LIKE' THEN 1 ELSE 0 END) as likes, " +
             "SUM(CASE re.state WHEN 'DISLIKE' THEN 1 ELSE 0 END) as dislikes) " +
             "FROM RatingEvent as re " +

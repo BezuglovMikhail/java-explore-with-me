@@ -3,7 +3,6 @@ package ru.practicum.ewm.service.impl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.dto.EventShortDto;
 import ru.practicum.ewm.dto.RatingDto;
 import ru.practicum.ewm.dto.RatingEventDto;
 import ru.practicum.ewm.dto.RatingEventShortDto;
@@ -112,12 +111,12 @@ public class RatingEventServiceImp implements RatingEventService {
             page = ratingEventRepository.findAllByDislikes(pageable);
         }
         Map<Long, Long> confirmedReqList = confirmedRequests.findConfirmedRequestsByEventIds(page.getContent()
-                .stream().map(RatingEventShortDto::getEvent).map(EventShortDto::getId).collect(Collectors.toList()));
+                .stream().map(RatingEventShortDto::getId).collect(Collectors.toList()));
 
         if (confirmedReqList != null) {
             for (RatingEventShortDto ratingEventShortDto : page) {
-                ratingEventShortDto.getEvent().setConfirmedRequests(
-                        confirmedReqList.get(ratingEventShortDto.getEvent().getId()));
+                ratingEventShortDto.setConfirmedRequests(
+                        confirmedReqList.get(ratingEventShortDto.getId()));
             }
         }
         return page.getContent();

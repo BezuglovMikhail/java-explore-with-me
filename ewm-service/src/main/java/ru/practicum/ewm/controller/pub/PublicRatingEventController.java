@@ -11,6 +11,8 @@ import ru.practicum.ewm.dto.RatingEventShortDto;
 import ru.practicum.ewm.service.RatingEventService;
 import ru.practicum.ewm.until.status.StateAssessment;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -22,8 +24,8 @@ public class PublicRatingEventController {
     private RatingEventService ratingEventService;
 
     @GetMapping
-    public List<RatingEventShortDto> getEventsWhitRating(@RequestParam(defaultValue = "0") Integer from,
-                                                         @RequestParam(defaultValue = "10") Integer size,
+    public List<RatingEventShortDto> getEventsWhitRating(@PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                         @Positive @RequestParam(defaultValue = "10") Integer size,
                                                          @RequestParam(name = "assessment",
                                                                  defaultValue = "LIKE") StateAssessment assessment) {
         log.info("Request Get received whit parameter assessment = {} to find list compilations ", assessment);
