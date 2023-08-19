@@ -3,6 +3,7 @@ package ru.practicum.ewm.service.impl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.dto.RatingDto;
 import ru.practicum.ewm.dto.RatingEventDto;
 import ru.practicum.ewm.dto.RatingEventShortDto;
@@ -51,6 +52,7 @@ public class RatingEventServiceImp implements RatingEventService {
         this.confirmedRequests = confirmedRequests;
     }
 
+    @Transactional
     @Override
     public RatingEventDto save(Long userId, Long eventId, NewRatingEventDto newRatingEventDto) {
         User appraiser = userRepository.findById(userId)
