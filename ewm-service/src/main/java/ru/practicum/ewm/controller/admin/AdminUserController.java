@@ -9,6 +9,8 @@ import ru.practicum.ewm.request.NewUserRequest;
 import ru.practicum.ewm.service.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -20,8 +22,8 @@ public class AdminUserController {
     UserService userService;
 
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam(defaultValue = "0") Integer from,
-                                  @RequestParam(defaultValue = "10") Integer size,
+    public List<UserDto> getUsers(@PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                  @Positive @RequestParam(defaultValue = "10") Integer size,
                                   @RequestParam(name = "ids", required = false) List<Long> ids) {
         log.info("Request Get received whit parameter ids = {}" +
                 " to find list user ", ids);

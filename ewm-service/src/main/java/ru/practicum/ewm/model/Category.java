@@ -21,7 +21,6 @@ public class Category {
     @NotBlank
     private String name;
 
-
     public Category(String name) {
         this.name = name;
     }

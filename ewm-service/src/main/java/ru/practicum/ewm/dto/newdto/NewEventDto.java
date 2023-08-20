@@ -1,7 +1,8 @@
-package ru.practicum.ewm.dto;
+package ru.practicum.ewm.dto.newdto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import ru.practicum.ewm.dto.LocationDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;

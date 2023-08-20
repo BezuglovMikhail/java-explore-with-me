@@ -2,7 +2,7 @@ package ru.practicum.ewm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StateEvent;
 
 import java.time.LocalDateTime;
 
@@ -39,7 +39,7 @@ public class EventFullDto {
 
     private Boolean requestModeration;
 
-    private State state;
+    private StateEvent state;
 
     private String title;
 

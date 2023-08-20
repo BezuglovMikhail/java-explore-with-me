@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StatusRequest;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class ParticipationRequestDto {
+
     private Long id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -21,5 +22,5 @@ public class ParticipationRequestDto {
 
     private Long requester;
 
-    private State status;
+    private StatusRequest status;
 }

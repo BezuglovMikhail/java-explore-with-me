@@ -5,7 +5,7 @@ import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.dto.ParticipationRequestDto;
 import ru.practicum.ewm.model.ParticipationRequest;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StatusRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,9 +34,8 @@ public class ParticipationRequestMapper {
         participationRequest.setState(
                 event.getRequestModeration().equals(false)
                         || event.getParticipantLimit() == 0
-                        ? State.CONFIRMED
-                        : State.PENDING);
-
+                        ? StatusRequest.CONFIRMED
+                        : StatusRequest.PENDING);
         return participationRequest;
     }
 

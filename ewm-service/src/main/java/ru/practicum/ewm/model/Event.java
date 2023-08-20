@@ -3,7 +3,7 @@ package ru.practicum.ewm.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.ewm.until.status.State;
+import ru.practicum.ewm.until.status.StateEvent;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -52,7 +52,8 @@ public class Event {
 
     private Boolean requestModeration;
 
-    private State state;
+    @Enumerated(EnumType.STRING)
+    private StateEvent state;
 
     @Size(min = 3, max = 120)
     private String title;

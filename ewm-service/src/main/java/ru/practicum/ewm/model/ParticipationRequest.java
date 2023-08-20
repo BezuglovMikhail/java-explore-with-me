@@ -1,7 +1,9 @@
 package ru.practicum.ewm.model;
 
-import lombok.*;
-import ru.practicum.ewm.until.status.State;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import ru.practicum.ewm.until.status.StatusRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -28,5 +30,5 @@ public class ParticipationRequest {
     private User requester;
 
     @Enumerated(EnumType.STRING)
-    private State state;
+    private StatusRequest state;
 }
