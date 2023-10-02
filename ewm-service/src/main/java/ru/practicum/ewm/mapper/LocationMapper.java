@@ -4,7 +4,6 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.dto.LocationDto;
 import ru.practicum.ewm.model.Location;
 
-
 @UtilityClass
 public class LocationMapper {
 
