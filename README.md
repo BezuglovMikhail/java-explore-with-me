@@ -1,7 +1,7 @@
 # java-explore-with-me
 
 ## Это репозиторий проекта ExploreWithMe.
-### Наше приложение это два сервиса:
+### Приложение это два сервиса:
 
 1. Основной сервис содержит всё необходимое для работы продукта.
     * API основного сервиса разделено на три части:
@@ -56,9 +56,18 @@
 
 Приложение написано на Java. Пример кода:
 ```java
-public class Practicum {
-    public static void main(String[] args) {
-    }
+@SpringBootApplication
+public class EwmService {
+   public static void main(String[] args) {
+      SpringApplication.run(EwmService.class, args);
+   }
+}
+
+@SpringBootApplication
+public class StatsServer {
+   public static void main(String[] args) {
+      SpringApplication.run(StatsServer.class, args);
+   }
 }
 ```
 
